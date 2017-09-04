@@ -1,0 +1,96 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;padding: 0;
+    list-style: none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    user-select:none
+}
+.clearfix:after { content: ''; display: block; clear: both; visibility: hidden; line-height: 0; height: 0; }
+html, body, #app {
+    height: 100%
+}
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: transparent
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 16px;
+    background-color: rgba(215, 215, 215, 0.6)
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(195, 195, 195, 0.6)
+}
+::-webkit-scrollbar-thumb:active {
+    background-color: rgba(175, 175, 175, 0.6)
+}
+::-webkit-scrollbar-button {
+    background: transparent;
+    height: 0;
+}
+
+.scs-logo,
+.scs-logo::before{
+    left: 50%;
+    top: 50%;
+    margin-left: -56px;
+    margin-top: -33px;
+    z-index: 2;
+    position: absolute;
+    height:56px;
+    width: 112px;
+    content: "";
+    background: url('../src/assets/logo.png') no-repeat center;
+}
+.scs-logo::before {
+    z-index: 3;
+    opacity:0;
+    margin-top:-28px;
+    animation: logo 4s ease-out infinite alternate;
+}
+@keyframes logo {
+    30% {
+        transform: scale(1);opacity:0.5;
+    }
+    0%,40%,100% {
+        transform: scale(2);opacity: 0;
+    }
+}
+.scs-loader,
+.scs-loader::before,
+.scs-loader::after {
+    left: 50%;
+    top: 50%;
+    margin-left: -60px;
+    margin-top: -60px;
+    position: absolute;
+    vertical-align: middle;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    z-index: 1;
+    content: "";
+}
+
+.scs-loader::before {
+    animation: bounce 1.5s infinite;
+}
+.scs-loader::after {
+    animation: bounce 1.5s -0.4s infinite;
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(0.2);opacity: 1 ;background: #f30;
+    }
+    100% {
+        transform: scale(1);opacity: 0;background: #ff0;
+    }
+}
+.scs-screen {
+    background: #50504f;
+    height: 100%;
+}
