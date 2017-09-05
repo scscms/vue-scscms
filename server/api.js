@@ -514,11 +514,11 @@ async function listArticle(ctx) {
         querying += " and read_type=?";
         arr.push(data.read_type >> 0);
     }
-    //会员只能查看自己的文章
+    //会员只能查看自己的文章(暂关闭)
     const user = ctx.state.userInfo;
     if(user.user_type > 2){
-        querying += " and user_id=?";
-        arr.push(user.id >> 0);
+        //querying += " and user_id=?";
+        //arr.push(user.id >> 0);
     }
     const connection = await mysql.createConnection(config.mysqlDB);
     const [rows] = await connection.execute("SELECT SQL_NO_CACHE COUNT(*) as total FROM `article`"+querying.replace('and','where'), arr);
@@ -728,6 +728,9 @@ async function listUpFile(ctx) {
     console.log((page - 1) * pageSize,page * pageSize);
     const [list] = await connection.execute('SELECT a.*,u.`user_name` FROM upload as a LEFT JOIN user as u on a.user_id = u.id LIMIT ?, ?', [(page - 1) * pageSize,pageSize]);
     await connection.end();
+    list.forEach(obj=>{
+        obj.full_path = common.web_domain + obj.file_path.replace(/\\/g,'/').replace('dist/','/');
+    });
     ctx.body = {
         success: true,
         message: '',

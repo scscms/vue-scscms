@@ -25,7 +25,7 @@
             <el-button type="warning" :disabled="grade.passedArticle" @click='passedArticle(null,0)'>批量审核</el-button>
             <el-button type="danger" :disabled="grade.deleteArticle" @click='deleteArticle()'>批量删除</el-button>
             <el-table stripe border style="width:100%;margin-top:10px" :data="table_data.data" @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="55"></el-table-column>
+                <el-table-column type="selection" :selectable="selectable" width="55"></el-table-column>
                 <el-table-column
                     show-overflow-tooltip
                     v-for="item in table_data.columns"
@@ -59,6 +59,7 @@
                     passedArticle: !0,
                     deleteArticle: !0,
                 },
+                userInfo:{},
                 read_type:common.user_type,
                 sort_data:[],
                 sort_id:[],
@@ -127,6 +128,10 @@
                     }
                 });
             },
+            selectable(row){
+                let user = this.userInfo;
+                return user.user_type < 3||(!this.grade.deleteArticle||!this.grade.passedArticle) && user.id !== row.user_id;
+            },
             add(){
                 this.$router.push('/article/add');
             },
@@ -136,12 +141,13 @@
             createButton(h, row, code, text){
                 let self = this;
                 let dis = false;
+                let user = this.userInfo;
                 if(code === 'passed'){
                     dis = this.grade.passedArticle;
                 }else if(code === 'edit'){
-                    dis = this.grade.updateArticle;
+                    dis = user.user_type > 2 && user.id !== row.user_id ? true : this.grade.updateArticle;
                 }else if(code === 'delete'){
-                    dis = this.grade.deleteArticle;
+                    dis = user.user_type > 2 && user.id !== row.user_id ? true : this.grade.deleteArticle;
                 }
                 return h('el-button', {
                     props: {size: 'small',disabled:dis},

@@ -65,6 +65,7 @@ const storage = multer.diskStorage({
 routes.post('/upFile', multer({storage}).single('file'), async ctx => {
     const {originalname,mimetype,filename,path,size} = ctx.req.file;
     let msg,is_del = 0;
+    let fullPath = common.web_domain + config.upPath.replace('dist/','/') + filename;
     if(size > common.upFile_maxSize || !common.upFile_accept.test(mimetype)) {
         msg = size > common.upFile_maxSize?'上传文件大小超出':'非法上传文件格式';
         is_del = 1;
@@ -75,7 +76,7 @@ routes.post('/upFile', multer({storage}).single('file'), async ctx => {
         success: !msg,
         message:msg,
         data: {
-            filename: common.web_domain + config.upPath.replace('dist/','/') + filename
+            filename: fullPath
         }
     }
 });

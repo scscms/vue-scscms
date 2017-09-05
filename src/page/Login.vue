@@ -50,8 +50,8 @@
             const _this = this;
             return {
                 data: {
-                    user_name: '',
-                    pass_word: ''
+                    user_name: 'vip会员',
+                    pass_word: 'vip123'
                 },
                 placeholder:{
                     name:common.name_txt,

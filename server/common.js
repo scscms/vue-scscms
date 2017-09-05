@@ -31,13 +31,13 @@ export default {
         upFile:4, //上传权限(共用)
         listUpFile:4,//管理上传列表
         listUser:4,//用户列表
-        updateUser:4,//添加、修改用户（超级管理员）
+        updateUser:1,//添加、修改用户（超级管理员）
         passedUser:4,//审核用户列表
         deleteUser:2,//删除用户列表
         listArticle: 4,	//文章列表（必须登录）
         updateArticle: 4, //新添或编辑文章（必须登录）
-        passedArticle: 4, //审核文章（管理员级别）
-        deleteArticle: 4, //删除文章（管理员级别或会员删除自己的）
+        passedArticle: 2, //审核文章（管理员级别）
+        deleteArticle: 2, //删除文章（管理员级别或会员删除自己的）
     },
     sort_type:{
         'news':'新闻',
@@ -55,6 +55,9 @@ export default {
     mixin:{
         methods:{
             dealUserInfo:function(o){
+                if(this.hasOwnProperty('userInfo')){
+                    this.userInfo = o;
+                }
                 const g = this.grade;
                 if(g){
                     const p = this.page_grade;

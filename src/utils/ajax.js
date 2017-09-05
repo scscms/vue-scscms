@@ -52,6 +52,7 @@ module.exports = function (url,data,fn) {
         headers: {'Content-Type': head}
     }).then(
         (res) => {
+            res = res ||{status:404,statusText:'服务器出错！'};
             if (res.status === 200 || res.status === 304 || res.status === 400) {
                 return res;
             }else{

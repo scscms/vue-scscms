@@ -37,6 +37,7 @@
                     page: 1,
                     pageSize: 10
                 },
+                errPic:require('@/assets/error.png'),
                 multipleSelection:[],
                 table_data: {
                     columns: [
@@ -98,6 +99,12 @@
                 let self = this;
                 if(key === 'file_size'){
                     str = (str/1024).toFixed(2)+'KB';
+                }else if(key === 'file_name'){
+                    return h('div',[h("el-popover", {
+                        ref: "pop",attrs: {placement: "top", trigger: "hover"}
+                    }, [h("img",{style:"max-width:400px",attrs:{src:row.full_path},on:{error:()=>{row.full_path = self.errPic}}})]), h("div", {
+                        directives: [{name: "popover",rawName: "v-popover:pop",arg: "pop"}]
+                    },row[key])]);
                 }else if(key === 'create_time'){
                     str = str.replace(/[^-\d].+/,'');
                 }else if(key === 'operations'){

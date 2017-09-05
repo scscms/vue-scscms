@@ -42,6 +42,7 @@
                     updateArticle: !0,
                     upFile: !0
                 },
+                userInfo:{},
                 read_type: common.user_type,
                 loading:false,
                 sort_id:[],
@@ -143,6 +144,9 @@
                     if(id){
                         ajax.call(this, '/getArticleById', {id}, (obj, err) => {
                             if (!err) {
+                                if(this.userInfo.user_type > 2 && obj.user_id !== this.userInfo.id){
+                                    return this.$router.back();
+                                }
                                 Object.getOwnPropertyNames(this.data).forEach(key => {
                                     this.data[key] = obj[key];
                                 });

@@ -14,12 +14,14 @@
 ### 在线预览
 ![image](static/readme.png)
 
-[点击查看在线DEMO](http://www.scscms.com:3001)
+[点击查看在线DEMO](http://www.scscms.com:3001) 
 
 ### 安装
 
 ```
 git clone https://github.com/scscms/vue-scscms.git
+
+//先git克隆或者下载下来，进入项目目录执行npm命令
 
 npm install
 ```
