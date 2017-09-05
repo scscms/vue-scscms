@@ -16,6 +16,10 @@
 
 [点击查看在线DEMO](http://www.scscms.com:3001) 
 
+**测试帐号**
+
+user：`vip会员`   password：`vip123`
+
 ### 安装
 
 ```
