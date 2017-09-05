@@ -51,6 +51,9 @@ Object.getOwnPropertyNames(urls).forEach(key=>{
 //文件上传配置
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        if (!fs.existsSync(config.upPath)) {
+            fs.mkdirSync(config.upPath);
+        }
         cb(null, config.upPath);
     },
     filename: function (req, file, cb) {
@@ -72,7 +75,7 @@ routes.post('/upFile', multer({storage}).single('file'), async ctx => {
         success: !msg,
         message:msg,
         data: {
-            filename: '/upFile/' + filename
+            filename: common.web_domain + config.upPath.replace('dist/','/') + filename
         }
     }
 });

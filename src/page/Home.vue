@@ -310,7 +310,8 @@
                                     message: '密码修改成功！请记住新密码。',
                                     type: 'success'
                                 });
-                                this.$router.push('login');
+                                storage.remove('userInfo');
+                                this.$router.push('/login');
                             }
                         })
                     }
