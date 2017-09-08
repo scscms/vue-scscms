@@ -1,6 +1,6 @@
 # vue-scscms V1.0
 
-基于koa+mysql+vue2.0+Element阳光内容管理系统
+基于koa2+mysql+vue2.0+Element阳光内容管理系统
 
     简单文章系统模板，含注册、登录、权限管理、用户管理范例。旨在提供一个完整的前后台node+vue2.0开发的脚手架，由您按需扩展。
 
@@ -14,7 +14,7 @@
 ### 在线预览
 ![image](static/readme.png)
 
-[点击查看在线DEMO](http://www.scscms.com:3001) 
+[点击查看在线DEMO](http://103.27.4.146:3001)
 
 **测试帐号**
 

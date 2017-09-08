@@ -273,6 +273,7 @@
                                     storage.set('userInfo',obj);
                                     Array.from(document.querySelectorAll(".top_right p,.user_info dt")).forEach(d => {
                                         d.style.backgroundImage = 'url(' + data.pic + ')';
+                                        d.textContent = '';
                                     })
                                 });
                                 this.upUserPic.visible = false;
