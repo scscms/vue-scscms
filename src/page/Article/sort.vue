@@ -250,6 +250,7 @@
         }
         .el-tree-node__content {
             border-bottom: 1px dashed #ddd;
+            white-space: normal;
         }
     }
     .button-tree {

@@ -42,7 +42,6 @@ module.exports = function (url,data,fn) {
         head = 'application/json;charset=utf-8';
         data = data.data;
     } else {
-        data._ = Math.random();//添加随机数防缓存
         data = querystring.stringify(data);
     }
     axios({
