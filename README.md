@@ -1,4 +1,4 @@
-# vue-scscms V1.0
+# vue-scscms
 
 基于koa2+mysql+vue2.0+Element阳光内容管理系统
 
