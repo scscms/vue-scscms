@@ -288,13 +288,14 @@ async function login(ctx) {
                 if (userInfo.user_type === 0) {
                     msg = '此帐号正在审核中！';
                 }else{
-                    await connection.execute('UPDATE `user` SET `login_ip`=? where `id`=?', [getClientIP(ctx), userInfo.id]);
+                    let ip = config.getClientIP(ctx);
+                    await connection.execute('UPDATE `user` SET `login_ip`=? where `id`=?', [ip, userInfo.id]);
                     delete userInfo.pass_word;
                     return ctx.body = {
                         success: true,
                         data: {
                             userInfo,
-                            token: jwt.sign(Object.assign({user_agent: ctx.header['user-agent']}, userInfo),
+                            token: jwt.sign(Object.assign({ip}, userInfo),
                                 config.JWTs.secret, {expiresIn: config.JWTs.expiresIn})
                         }
                     }

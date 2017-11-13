@@ -172,7 +172,7 @@
                     return h('div',[
                         this.createButton(h,row,'edit','编辑'),
                         this.createButton(h,row,'delete','删除'),
-                    ])
+                    ]);
                 }else if(key === 'read_type'){
                     str = common.user_type[str]||'未知';
                 }

@@ -105,7 +105,7 @@ async function verify(ctx) {
             if (err) {
                 resolve('token验证错误！');
             } else {
-                if (!Number.isInteger(decoded.id) || decoded.user_type === 0 || ctx.request.header['user-agent'] !== decoded['user_agent']) {
+                if (config.getClientIP(ctx) !== decoded.ip || !Number.isInteger(decoded.id)) {
                     resolve('token无效！');
                 } else if (decoded.user_type > userType) {
                     resolve('对不起您无权操作！');
