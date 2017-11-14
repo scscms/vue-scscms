@@ -183,6 +183,10 @@ npm run server
 - 23、deleteArticle: 删除文章（访问权限：自定义）
 - 24、getArticleById: 通过ID获取文章详情（访问权限：游客）
 
+### 实践项目
+
+- [前端监控系统monitor](https://github.com/scscms/scs-monitor)
+
 ### 后记
 
 因时间关键，原计划还要做上前台界面和文章评论，姑且放到下一个版本来制作了。时间匆忙难免错漏，肯请指正。
