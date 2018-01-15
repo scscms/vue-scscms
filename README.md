@@ -56,7 +56,7 @@ npm run dev
 
 - 然后打开文件`config/index.js`修改`target: 'http://103.27.4.146:3001'`为你自己的服务器地址，默认为`target: 'http://localhost:3001',`。
 
-- 然后打开文件`config/common.js`修改`web_domain: 'http://103.27.4.146:3001'`为你自己的服务器地址，默认为`web_domain: 'http://localhost:3001',`。
+- 然后打开文件`server/common.js`修改`web_domain: 'http://103.27.4.146:3001'`为你自己的服务器地址，默认为`web_domain: 'http://localhost:3001',`。
 
 - 最后执行npm脚本：
 
