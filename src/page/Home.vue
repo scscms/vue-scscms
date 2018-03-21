@@ -320,7 +320,7 @@
             },
             //退出登录
             loginOut(){
-                storage.remove('token');
+                storage.remove('userInfo');
                 this.$router.push('/login');
             },
             showUserInfo(){
