@@ -55,3 +55,6 @@ CREATE TABLE `upload` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='上传列表';
+
+INSERT INTO user (user_name,pass_word,user_type,user_email) VALUES ('admin','$2a$10$oe/ovruYdv0EmNsKWLJwfu6Na51whOBRJOAJxBO.yt/C6DxQhdDNK',1,'10000@qq.com');
+#可选的操作：插入用户：admin  密码：admin123
