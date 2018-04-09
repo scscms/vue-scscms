@@ -127,8 +127,13 @@ async function upUserPic(ctx) {
 //保存用户
 async function updateUser(ctx) {
     let data = ctx.request.body;
-    data.user_type = data.user_type >> 0;
-    data.user_type = 1 === data.user_type ? 4 : data.user_type;
+    data.user_type = data.user_type >> 0;//用户类型
+    let id = data.id >> 0;//编辑的用户ID
+    const user = ctx.state.userInfo;//获取用户信息
+    if(user.user_type > 1 && !id){
+        //非超管添加用户:禁止添加比自己大的用户类型
+        data.user_type = Math.max(data.user_type,user.user_type);
+    }
     let msg,arr = [];
     const obj = {
         user_name:'用户帐号',
@@ -151,8 +156,12 @@ async function updateUser(ctx) {
     } else if (!common.email_reg.test(data.user_email)) {
         msg = common.email_txt;
     }
+    if(user.user_type > 1 && id){
+        //非超管修改用户:禁止修改用户类型
+        array.splice(3,1);
+        arr.splice(3,1);
+    }
     if(!msg){
-        let id = data.id >> 0;
         const connection = await mysql.createConnection(config.mysqlDB);
         if(id){
             array.splice(0,2);//修改时不能修改帐号和邮箱
