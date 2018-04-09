@@ -15,9 +15,9 @@ export default {
     },
     //邮件服务配置
     emailServer:{
-        service: 'SMTP',
         host: 'smtp.126.com',
         port: 465,
+        secure: true,
         auth: {
             user: '您的邮箱',
             pass: '邮箱密码'

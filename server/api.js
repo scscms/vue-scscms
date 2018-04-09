@@ -22,18 +22,16 @@ function getClientIP(ctx) {
 
 //公用：发送邮件
 function sendEmail(email, title, body) {
-    return new Promise((resolve, reject) => {
-        const transporter = nodemailer.createTransport(config.emailServer, {
-            from: '<' + config.emailServer.auth.user + '>',
-        });
-        transporter.sendMail({
+    return new Promise(resolve => {
+        let transporter = nodemailer.createTransport(config.emailServer);
+        let mailOptions = {
+            from: common.web_name+'<' + config.emailServer.auth.user + '>',
             to: email,
             subject: title,
-            html: body,
-            watchHtml: body,
-        }, (error, info) => {
-            transporter.close();
-            resolve(error ? error.message : '');
+            html: body
+        };
+        transporter.sendMail(mailOptions, err => {
+            resolve(err ? err : null);
         });
     })
 }
