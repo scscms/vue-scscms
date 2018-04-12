@@ -44,11 +44,35 @@
                 :total="table_data.total">
             </el-pagination>
         </el-row>
+        <Sidebar ref="view">
+            <div slot='title'>{{article.title}}</div>
+            <div slot="content" class="sidebar_content" v-loading="loading">
+                <el-row :gutter="20" class="">
+                    <el-col :span="6"><strong>文章分类：</strong>{{article.sort_name}}</el-col>
+                    <el-col :span="6"><strong>作者：</strong>{{article.user_name}}</el-col>
+                    <el-col :span="6"><strong>阅读权限：</strong>{{read_type[article.read_type]}}</el-col>
+                    <el-col :span="6"><strong>时间：</strong>{{article.create_time}}</el-col>
+                </el-row>
+                <el-row :gutter="20" class="">
+                    <el-col :span="24"><strong>文章概要：</strong>{{article.description}}</el-col>
+                </el-row>
+                <div class="article_content" v-html="article.content">文章内容</div>
+            </div>
+            <div slot="foot" class="sidebar_foot">
+                <p>上一条：<span v-if="!article.next.title">已经没有上一条数据</span>
+                    <a @click="getActiveContent(article.next.id)" href="javascript:void 0">{{article.next.title}}</a>
+                </p>
+                <p>下一条：<span v-if="!article.prev.title">已经没有下一条数据</span>
+                    <a @click="getActiveContent(article.prev.id)" href="javascript:void 0">{{article.prev.title}}</a>
+                </p>
+            </div>
+        </Sidebar>
     </div>
 </template>
 <script type="text/javascript">
     import {ajax,storage} from 'utils';
     import common from 'common';
+    import Sidebar from 'components/Sidebar.vue';
     module.exports = {
         name: 'list',
         data() {
@@ -89,6 +113,18 @@
                     ],
                     total: 0,
                     data: []
+                },
+                loading:false,
+                article:{
+                    title:'',
+                    sort_name:'',
+                    user_name:'',
+                    read_type:'',
+                    create_time:'',
+                    description:'',
+                    content:'',
+                    prev:{id:0,title:''},
+                    next:{id:0,title:''}
                 }
             }
         },
@@ -157,15 +193,24 @@
                         }
                     }
                 },[text])
-
             },
             //格式化输出内容
             columnFormatter(row, column){
+                let self = this;
                 let key = column.property;
                 let str = row[key]||'';
                 let h = this.$createElement;
                 if(key === 'create_time'){
                     str = str.replace(/[^-\d].+/,'');
+                }else if(key === 'title'){
+                    return h('span',{
+                        style:{cursor:'pointer'},
+                        on:{
+                            click(){
+                                self.healColumnClick('view', row);
+                            }
+                        }
+                    },[str]);
                 }else if(key === 'passed'){
                     return this.createButton(h,row,key,str === 1?'审核':'通过');
                 }else if(key === 'operations'){
@@ -182,11 +227,46 @@
             healColumnClick(code, row){
                 if(code ==='edit'){
                     this.$router.push('/article/edit/'+row.id);
+                }else if(code ==='view'){
+                    this.$refs.view.open(!0);
+                    this.getActiveContent(row.id);
                 }else if(code ==='passed'){
                     this.passedArticle([row],row.passed===1?0:1);
                 }else if(code === 'delete'){
                     this.deleteArticle([row]);
                 }
+            },
+            getActiveContent(id){
+                this.loading = !0;
+                ajax.call(this, '/getArticleById', {id}, (obj, err) => {
+                    this.loading = !1;
+                    if (err) {
+                        this.$refs.view.open(!1);
+                    }else{
+                        console.log(JSON.stringify(obj));
+                        Object.getOwnPropertyNames(this.article).forEach(key => {
+                            this.$set(this.article,key,obj[key]);
+                        });
+                        this.article.create_time = new Date(this.article.create_time).toLocaleDateString();
+                        //显示分类
+                        const cid = obj.sort_id;
+                        let hasFind = false;
+                        let cb = (array,a)=>{
+                            !hasFind && array && array.forEach(item=>{
+                                a = a||[];
+                                let _a = [].concat(a);
+                                _a.push(item.id);
+                                if(item.id === cid){
+                                    hasFind = true;
+                                    this.sort_id = _a;
+                                }else{
+                                    cb(item.children,_a);
+                                }
+                            })
+                        };
+                        cb(this.sort_data);
+                    }
+                })
             },
             //ajax请求列表数据
             ajaxData(){
@@ -233,6 +313,9 @@
             });
         },
         mixins:[common.mixin],
+        components:{
+            Sidebar
+        }
     }
 </script>
 <style lang="less">
@@ -258,6 +341,36 @@
         }
         .el-cascader--small .el-cascader__label{
             line-height: 40px;
+        }
+    }
+    .sidebar_content{
+        .el-row{
+            font-size:15px;
+            color:#666;
+            margin-bottom:8px;
+            strong{
+                color:#555;
+            }
+        }
+        .article_content{
+            font-size: 12px;
+            margin-top: 20px;
+            padding: 10px;
+            background: #f1f1f112;
+            border: 1px solid #f9f9f9;
+            .no_access{
+                color:#999;
+                font-size:16px;
+            }
+        }
+    }
+    .sidebar_foot p{
+        span{
+            color:#999;
+        }
+        a{
+            text-decoration: none;
+            color:#444;
         }
     }
 </style>

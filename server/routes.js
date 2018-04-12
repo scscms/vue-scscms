@@ -10,6 +10,7 @@ const routes = koa_router();
 
 // userType:需要的用户权限  0:游客 1:超级管理员 2:普通管理员 3:VIP用户 4:普通用户
 const urls = {
+    'saveXML'   : {userType: 0},	//保存xml（游客）
     'login'   : {userType: 0},	//用户登录（游客）
     'register': {userType: 0},	//用户注册（游客）
     'retrieve': {userType: 0},	//找回密码（游客）
@@ -33,7 +34,7 @@ const urls = {
     'updateArticle': {},
     'passedArticle': {},
     'deleteArticle': {},
-    'getArticleById': {userType: 0},//获取文章详情
+    'getArticleById': {userType: 4},//获取文章详情
 };
 
 Object.getOwnPropertyNames(urls).forEach(key=>{
