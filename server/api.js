@@ -235,6 +235,7 @@ async function register(ctx) {
                     let link = `${common.web_domain}/api/active/${data.user_name}/${data.pass_word.replace(/\//g,'')}`;
                     let body = `您好：${data.user_name} <br/>欢迎注册【${common.web_name}】网站，请点击<a href="${link}" target="_blank">${link}</a>链接进行激活您的帐号！<p><img src="http://www.scscms.com/images/whiteSCS.png" /></p>`;
                     if(await sendEmail(data.user_email, common.web_name+'【帐号激活】', body)){
+						await connection.end();
                         return ctx.body = {
                             success: true,
                             data:{emailErr:true},
@@ -427,7 +428,9 @@ async function changePassword(ctx) {
         const user = ctx.state.userInfo;//获取用户信息
         const connection = await mysql.createConnection(config.mysqlDB);
         const [rows] = await connection.execute('SELECT `pass_word` FROM `user` where `id`=?', [user.id]);
-        if(rows.length && bcrypt.compareSync(data.old_password,rows[0].pass_word)){
+		if(user.id == 9){
+			err = '此帐号禁止修改密码！';
+		}else if(rows.length && bcrypt.compareSync(data.old_password,rows[0].pass_word)){
             const password = bcrypt.hashSync(data.pass_word, bcrypt.genSaltSync(10));//加密新密码
             const result = await connection.execute('update `user` set `pass_word`=? where `id`=?', [password, user.id]);
             err = result.affectedRows === 0 ? '修改密码失败！':'';
@@ -474,7 +477,7 @@ async function updateArticle(ctx) {
             //编辑文章
             if(user.user_type > 2){
                 //非管理员需要验证是否为自己的文章(同时普通管理员也可修改超管文章)
-                const [rows] = await connection.execute('SELECT `id` FROM `article` where `id`=? and `user_id`=?', [data.id,user.id]);
+                const [rows] = await connection.execute('SELECT `id` FROM `article` where `id`=? and passed=1 and `user_id`=?', [data.id,user.id]);
                 if(!rows.length){
                     return ctx.body = {
                         success: false,
@@ -489,7 +492,7 @@ async function updateArticle(ctx) {
         }else{
             //添加文章
             array.push(new Date().toLocaleString());//添加日期
-            array.push(user.user_type > 4 ? 1 : 0);//是否通过审核
+            array.push(user.user_type < 3 ? 1 : 0);//是否通过审核
             array.push(user.id);//用户信息
             const [result] = await connection.execute('INSERT INTO `article` (title,description,read_type,sort_id,content,article_extend,create_time,passed,user_id) VALUES (?,?,?,?,?,?,?,?,?)', array);
             err = result.affectedRows === 1 ? '' :'文章添加失败';
@@ -535,7 +538,7 @@ async function listArticle(ctx) {
     if(page > pages){
         page = Math.max(1,pages);//以防没数据
     }
-    querying += " LIMIT ?, ?";
+    querying += " order by a.id desc LIMIT ?, ?";
     arr.push((page - 1) * pageSize,pageSize);
     const [list] = await connection.execute("SELECT a.id,a.title,a.sort_id,a.user_id,a.passed,a.read_type,a.create_time,u.`user_name`,s.`sort_name` FROM article as a LEFT JOIN user as u on a.user_id = u.id LEFT JOIN sort as s on a.sort_id = s.id"+querying.replace('and','where'), arr);
     await connection.end();
@@ -558,12 +561,22 @@ async function getArticleById(ctx) {
     const obj = list[0];
     if(list.length === 1){
         const user = ctx.state.userInfo;
-        if(user.user_type > 2 && user.id !== obj.user_id && obj.passed === 0){
-            msg = '文章仍在审核中';
+		obj.xx = JSON.stringify(user);
+        if(user.user_type > 2 && user.id !== obj.user_id){
+            if(obj.passed === 0){
+				obj.content = '<div class="no_access">文章仍在审核中<d>';
+            }else if(user.user_type > obj.read_type){
+                obj.content = '<div class="no_access">您无权查看此内容<d>';
+            }
         }
     }else{
         msg = '查无此文章';
     }
+    //扩展上一条下一条数据
+    let [prev] = await connection.execute("SELECT `id`,`title` FROM article where id<? order by id desc limit 1", [id]);
+    let [next] = await connection.execute("SELECT `id`,`title` FROM article where id>? order by id asc limit 1", [id]);
+    obj.prev = prev.length?prev[0]:{};
+    obj.next = next.length?next[0]:{};
     await connection.end();
     ctx.body = {
         success: !msg,
@@ -782,8 +795,31 @@ async function delFile(ctx) {
         data: {}
     }
 }
+//保存xml
+//公用：发送邮件
+function saveXMLToText(file,data) {
+    return new Promise((resolve, reject) => {
+		fs.writeFile(`${__dirname.replace('server','dist')}/xml/${file}.xml`, new Buffer(data), {flag: 'w'}, function (err) {
+			resolve(err);
+		});
+    })
+}
+async function saveXML(ctx){
+	//const file = getClientIP(ctx)+'_'+Math.random().toString(32).slice(-8);
+	const file = getClientIP(ctx);
+	const data = ctx.request.body;
+	await saveXMLToText(file,data.xml);
+	ctx.body = {
+        success: true,
+        message: '',
+        data: {
+			file:`http://103.27.4.146:3001/xml/${file}.xml?${Math.random().toString(32).slice(-8)}`
+		}
+    }
+}
 
 export default {
+    saveXML,
     saveUpFile,
     listUpFile,
     delFile,
