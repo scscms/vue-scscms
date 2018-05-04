@@ -128,8 +128,7 @@
                             if (!err) {
                                 let a = (obj)=>{
                                     obj && obj.forEach((o,i)=>{
-                                        a(o.children);
-                                        v.includes(o.id)&&obj.splice(i,1);
+                                        v.includes(o.id)?obj.splice(i,1):a(o.children);
                                     });
                                 };
                                 a(this.data);
@@ -173,7 +172,9 @@
             },
             addSort(){
                 for (let key in this.form) {
-                    this.form[key] = key === 'id' ? 0 : '';
+                    if(this.form.hasOwnProperty(key)){
+                        this.form[key] = key === 'id' ? 0 : '';
+                    }
                 }
                 this.parent_id = [];
                 this.visible = true;
