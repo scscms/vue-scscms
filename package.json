@@ -8,7 +8,9 @@
         "dev": "node build/dev-server.js",
         "build": "node build/build.js",
         "server": "nodemon --delay 2000ms -w app.js -w server server-entry.js",
-        "start": "concurrently -k \"npm run server\" \"npm run dev\""
+        "start": "concurrently -k \"npm run server\" \"npm run dev\"",
+        "lint": "eslint --ext .js --ext .vue ./src ./server",
+        "lint-fix": "eslint --fix --ext .js --ext .vue ./src ./server"
     },
     "dependencies": {
         "axios": "^0.15.3",
@@ -36,6 +38,7 @@
     "devDependencies": {
         "autoprefixer": "^6.7.2",
         "babel-core": "^6.22.1",
+        "babel-eslint": "^8.2.3",
         "babel-loader": "^6.2.10",
         "babel-preset-env": "^1.6.1",
         "babel-preset-es2015": "^6.24.1",
@@ -46,6 +49,14 @@
         "connect-history-api-fallback": "^1.3.0",
         "copy-webpack-plugin": "^4.0.1",
         "css-loader": "^0.28.4",
+        "eslint": "^4.19.1",
+        "eslint-config-standard": "^11.0.0",
+        "eslint-loader": "^2.0.0",
+        "eslint-plugin-html": "^4.0.3",
+        "eslint-plugin-import": "^2.11.0",
+        "eslint-plugin-node": "^6.0.1",
+        "eslint-plugin-promise": "^3.7.0",
+        "eslint-plugin-standard": "^3.1.0",
         "eventsource-polyfill": "^0.9.6",
         "express": "^4.14.1",
         "extract-text-webpack-plugin": "^2.0.0",

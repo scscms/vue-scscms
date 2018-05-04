@@ -79,7 +79,65 @@ npm run build
 ```
 npm run server
 ```
+## 添加ESLint语法检查（可选）
 
+- 安装依赖包
+
+```
+$ npm install eslint babel-eslint eslint-loader -D
+```
+- 新建配置文件
+
+```
+$ node_modules\.bin\eslint --init
+? How would you like to configure ESLint? (Use arrow keys)
+  Answer questions about your style
+❯ Use a popular style guide #选择并回车
+  Inspect your JavaScript file(s)
+? Which style guide do you want to follow? (Use arrow keys)
+  Google
+  Airbnb
+❯ Standard #选择并回车
+? What format do you want your config file to be in? (Use arrow keys)
+❯ JavaScript #选择并回车
+  YAML
+  JSON
+```
+然后会自动安装5个依赖包。并自动生成`.eslintrc.js`文件，修改此文件为：
+
+```
+module.exports = {
+  "extends": "standard",
+  "plugins": [
+    "html"
+  ],
+  "parser": "babel-eslint"
+};
+```
+
+- 添加预处理功能：build/webpack.base.conf.js
+
+```
+ {
+    test: /\.(vue|js|jsx)$/,
+    loader: 'eslint-loader',
+    include:[path.resolve(__dirname, '../src'),path.resolve(__dirname, '../server')],
+    enforce: 'pre'
+}
+```
+
+- 添加node命令：package.json
+```
+"scripts": {
+    ...
+    "lint": "eslint --ext .js --ext .vue src/",
+    "lint-fix": "eslint --fix --ext .js --ext .vue src/"
+}
+```
+```
+$ npm run lint #语法检查
+$ npm run lint-fix #语法检查并尝试修正
+```
 ## 项目架构
 
 ```

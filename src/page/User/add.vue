@@ -28,138 +28,138 @@
     </div>
 </template>
 <script type="text/javascript">
-    import {ajax,storage} from 'utils';
-    import common from 'common';
-    import components from 'components';
-    module.exports = {
-        name: 'list',
-        data() {
-            const _this = this;
-            return {
-                page_grade:common.page_grade,
-                grade:{
-                    updateUser:!0,
-                    upFile:!0,
-                },
-                user_type: common.user_type,
-                loading:false,
-                err:'',
-                data: {
-                    id:0,
-                    user_name: '',
-                    pass_word:'',
-                    user_email:'',
-                    user_type:'0',
-                    user_pic: ''
-                },
-                rules: {
-                    user_name: [{
-                        required: true,
-                        message: '用户帐号不能为空！',
-                        trigger: 'change'
-                    }, {
-                        validator: (rule, value, callback) => {
-                            if (!common.name_reg.test(value)) {
-                                callback(new Error(common.name_txt));
-                            } else if (_this.err.includes('帐号')) {
-                                callback(new Error(_this.err));
-                            } else {
-                                callback();
-                            }
-                        },
-                        trigger: 'change'
-                    }],
-                    pass_word: [{
-                        required: true,
-                        message: '密码不能为空！',
-                        trigger: 'change'
-                    }, {
-                        pattern: common.pass_reg,
-                        message: common.pass_txt,
-                        trigger: 'change'
-                    }],
-                    user_email: [{
-                        required: true,
-                        message: '邮箱不能为空！',
-                        trigger: 'change'
-                    }, {
-                        validator: (rule, value, callback) => {
-                            if (!common.email_reg.test(value)) {
-                                callback(new Error(common.email_txt));
-                            } else if (_this.err.includes('邮箱')) {
-                                callback(new Error(_this.err));
-                            } else {
-                                callback();
-                            }
-                        },
-                        trigger: 'change'
-                    }],
-                    user_type: [{
-                        required: true, message: '请选择用户类型', trigger: 'change'
-                    }]
-                }
+import {ajax} from 'utils'
+import common from 'common'
+import components from 'components'
+module.exports = {
+  name: 'list',
+  data () {
+    const _this = this
+    return {
+      page_grade: common.page_grade,
+      grade: {
+        updateUser: !0,
+        upFile: !0
+      },
+      user_type: common.user_type,
+      loading: false,
+      err: '',
+      data: {
+        id: 0,
+        user_name: '',
+        pass_word: '',
+        user_email: '',
+        user_type: '0',
+        user_pic: ''
+      },
+      rules: {
+        user_name: [{
+          required: true,
+          message: '用户帐号不能为空！',
+          trigger: 'change'
+        }, {
+          validator: (rule, value, callback) => {
+            if (!common.name_reg.test(value)) {
+              callback(new Error(common.name_txt))
+            } else if (_this.err.includes('帐号')) {
+              callback(new Error(_this.err))
+            } else {
+              callback()
             }
-        },
-        methods: {
-            saveUser(){
-                this.$refs.form.validate(v => {
-                    if (v) {
-                        this.visible = true;
-                        this.data.article_extend = JSON.stringify({pic:this.data.pic});
-                        ajax.call(this, '/updateUser', this.data, (data, err) => {
-                            this.loading = false;
-                            if (!err) {
-                                this.$message({
-                                    message: '保存成功',
-                                    type: 'success'
-                                });
-                                this.$router.push('/user/list');
-                            }else{
-                                this.err = err;
-                                if (err.includes('帐号') || err.includes('邮箱')) {
-                                    this.$refs.form.validateField(err.includes('帐号') ? 'user_name' : 'user_email');
-                                }
-                            }
-                        })
-                    }
-                });
-            },
-            upImg(){
-                this.$refs.upload.SelectFile();
-            },
-            backList(){
-                this.$router.push('/user/list');
-            },
-            successUpload(data){
-                this.data.user_pic = data.filename;
+          },
+          trigger: 'change'
+        }],
+        pass_word: [{
+          required: true,
+          message: '密码不能为空！',
+          trigger: 'change'
+        }, {
+          pattern: common.pass_reg,
+          message: common.pass_txt,
+          trigger: 'change'
+        }],
+        user_email: [{
+          required: true,
+          message: '邮箱不能为空！',
+          trigger: 'change'
+        }, {
+          validator: (rule, value, callback) => {
+            if (!common.email_reg.test(value)) {
+              callback(new Error(common.email_txt))
+            } else if (_this.err.includes('邮箱')) {
+              callback(new Error(_this.err))
+            } else {
+              callback()
             }
-        },
-        mounted() {
-            let id = this.$route.params.id;
-            if(id) {
-                ajax.call(this, '/getUserById', {id}, (obj, err) => {
-                    if (!err) {
-                        Object.getOwnPropertyNames(this.data).forEach(key => {
-                            if(key !== 'pass_word'){
-                                this.data[key] = obj[key]+'';
-                            }
-                        });
-                        this.data.pass_word = common.defaultPassword;
-                    }
-                })
-            }
-         },
-        watch: {
-            'data.user_name'(){
-                if(this.err.includes('帐号'))this.err = '';
-            },
-            'data.user_email'(){
-                if(this.err.includes('邮箱'))this.err = '';
-            }
-        },
-        mixins:[common.mixin],
-        components
+          },
+          trigger: 'change'
+        }],
+        user_type: [{
+          required: true, message: '请选择用户类型', trigger: 'change'
+        }]
+      }
     }
+  },
+  methods: {
+    saveUser () {
+      this.$refs.form.validate(v => {
+        if (v) {
+          this.visible = true
+          this.data.article_extend = JSON.stringify({pic: this.data.pic})
+          ajax.call(this, '/updateUser', this.data, (data, err) => {
+            this.loading = false
+            if (!err) {
+              this.$message({
+                message: '保存成功',
+                type: 'success'
+              })
+              this.$router.push('/user/list')
+            } else {
+              this.err = err
+              if (err.includes('帐号') || err.includes('邮箱')) {
+                this.$refs.form.validateField(err.includes('帐号') ? 'user_name' : 'user_email')
+              }
+            }
+          })
+        }
+      })
+    },
+    upImg () {
+      this.$refs.upload.SelectFile()
+    },
+    backList () {
+      this.$router.push('/user/list')
+    },
+    successUpload (data) {
+      this.data.user_pic = data.filename
+    }
+  },
+  mounted () {
+    let id = this.$route.params.id
+    if (id) {
+      ajax.call(this, '/getUserById', {id}, (obj, err) => {
+        if (!err) {
+          Object.getOwnPropertyNames(this.data).forEach(key => {
+            if (key !== 'pass_word') {
+              this.data[key] = obj[key] + ''
+            }
+          })
+          this.data.pass_word = common.defaultPassword
+        }
+      })
+    }
+  },
+  watch: {
+    'data.user_name' () {
+      if (this.err.includes('帐号')) this.err = ''
+    },
+    'data.user_email' () {
+      if (this.err.includes('邮箱')) this.err = ''
+    }
+  },
+  mixins: [common.mixin],
+  components
+}
 </script>
 <style lang="less">
 

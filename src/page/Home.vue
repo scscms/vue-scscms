@@ -102,284 +102,284 @@
 </template>
 
 <script type="text/javascript">
-    import {ajax, storage} from 'utils';
-    import common from 'common';
-    import components from 'components';
-    //动画对象
-    const act = {
-        start: null,//状态：off,on,null
-        div: null,
-        obj: null,
-        parameter: {
-            delay: 0,
-            endDelay: 0,
-            fill: 'forwards',
-            iterations: 1,
-            duration: 500,
-            direction: 'normal',
-            easing: 'ease-in'
-        },
-        keyframes: [
-            {
-                offset: 0,
-                opacity: 0,
-                filter: 'blur(40px)',
-                transformOrigin: '50% 0',
-                transform: 'perspective(800px) rotateY(-180deg) translateZ(150px)',
-            },{
-                offset: 1,
-                opacity: 1,
-                filter: 'blur(0px)',
-                transformOrigin: '0 0',
-                transform: 'perspective(800px) rotateY(0deg) translate3d(0px,0px,0px)',
+    import {ajax, storage} from 'utils'
+import common from 'common'
+import components from 'components'
+// 动画对象
+const act = {
+      start: null, // 状态：off,on,null
+      div: null,
+      obj: null,
+      parameter: {
+        delay: 0,
+        endDelay: 0,
+        fill: 'forwards',
+        iterations: 1,
+        duration: 500,
+        direction: 'normal',
+        easing: 'ease-in'
+      },
+      keyframes: [
+        {
+          offset: 0,
+          opacity: 0,
+          filter: 'blur(40px)',
+          transformOrigin: '50% 0',
+          transform: 'perspective(800px) rotateY(-180deg) translateZ(150px)'
+        }, {
+          offset: 1,
+          opacity: 1,
+          filter: 'blur(0px)',
+          transformOrigin: '0 0',
+          transform: 'perspective(800px) rotateY(0deg) translate3d(0px,0px,0px)'
+        }
+      ]
+    }
+export default {
+      name: 'home',
+      data () {
+        const _this = this
+        return {
+          page_grade: common.page_grade,
+          grade: {
+            changePassword: !0,
+            upFile: !0
+          },
+          userInfo: {},
+          upUserPic: {
+            visible: false,
+            pic: '',
+            rules: {
+              pic: {
+                required: true,
+                pattern: common.pic_reg,
+                message: common.pic_txt,
+                trigger: 'change'
+              }
             }
-        ]
-    };
-    export default {
-        name: 'home',
-        data () {
-            const _this = this;
-            return {
-                page_grade:common.page_grade,
-                grade:{
-                    changePassword:!0,
-                    upFile:!0,
+          },
+          isCollapse: false,
+          headerCurRouter: '',
+          routes: [],
+          menu: this.$router.options.routes,
+          password: {
+            visible: false,
+            loading: false,
+            form: {
+              old_password: '',
+              pass_word: '',
+              pass_words: ''
+            },
+            rules: {
+              old_password: [{
+                required: true,
+                message: '旧密码不能为空！',
+                trigger: 'change'
+              }, {
+                validator: (rule, value, callback) => {
+                  if (!common.pass_reg.test(value)) {
+                    callback(new Error(common.pass_txt))
+                  } else {
+                    _this.password.form.pass_word && _this.$refs.password.validateField('pass_word')
+                    callback()
+                  }
                 },
-                userInfo: {},
-                upUserPic:{
-                    visible:false,
-                    pic:'',
-                    rules:{
-                        pic:{
-                            required: true,
-                            pattern: common.pic_reg,
-                            message: common.pic_txt,
-                            trigger: 'change'
-                        }
-                    }
+                trigger: 'change'
+              }],
+              pass_word: [{
+                required: true,
+                message: '新密码不能为空！',
+                trigger: 'change'
+              }, {
+                validator: (rule, value, callback) => {
+                  let form = _this.password.form
+                  if (!common.pass_reg.test(value)) {
+                    callback(new Error(common.pass_txt))
+                  } else if (form.old_password === form.pass_word) {
+                    callback(new Error('新密码不能与旧密码相同！'))
+                  } else {
+                    form.pass_words && _this.$refs.password.validateField('pass_words')
+                    callback()
+                  }
                 },
-                isCollapse: false,
-                headerCurRouter:"",
-                routes:[],
-                menu:this.$router.options.routes,
-                password:{
-                    visible:false,
-                    loading:false,
-                    form:{
-                        old_password:'',
-                        pass_word:'',
-                        pass_words:''
-                    },
-                    rules:{
-                        old_password:[{
-                            required: true,
-                            message: '旧密码不能为空！',
-                            trigger: 'change'
-                        }, {
-                            validator: (rule, value, callback) => {
-                                if(!common.pass_reg.test(value)){
-                                    callback(new Error(common.pass_txt));
-                                } else {
-                                    _this.password.form.pass_word && _this.$refs.password.validateField('pass_word');
-                                    callback();
-                                }
-                            },
-                            trigger: 'change'
-                        }],
-                        pass_word:[{
-                            required: true,
-                            message: '新密码不能为空！',
-                            trigger: 'change'
-                        }, {
-                            validator: (rule, value, callback) => {
-                                let form = _this.password.form;
-                                if(!common.pass_reg.test(value)){
-                                    callback(new Error(common.pass_txt));
-                                } else if(form.old_password === form.pass_word) {
-                                    callback(new Error('新密码不能与旧密码相同！'));
-                                } else {
-                                    form.pass_words && _this.$refs.password.validateField('pass_words');
-                                    callback();
-                                }
-                            },
-                            trigger: 'change'
-                        }],
-                        pass_words:[{
-                            required: true,
-                            message: '确认密码不能为空！',
-                            trigger: 'change'
-                        }, {
-                            validator: (rule, value, callback) => {
-                                let form = _this.password.form;
-                                if(!common.pass_reg.test(value)){
-                                    callback(new Error(common.pass_txt));
-                                } else if(form.pass_word !== form.pass_words) {
-                                    callback(new Error('新密码与确认密码不相同！'));
-                                } else {
-                                    callback();
-                                }
-                            },
-                            trigger: 'change'
-                        }]
-                    }
-                }
+                trigger: 'change'
+              }],
+              pass_words: [{
+                required: true,
+                message: '确认密码不能为空！',
+                trigger: 'change'
+              }, {
+                validator: (rule, value, callback) => {
+                  let form = _this.password.form
+                  if (!common.pass_reg.test(value)) {
+                    callback(new Error(common.pass_txt))
+                  } else if (form.pass_word !== form.pass_words) {
+                    callback(new Error('新密码与确认密码不相同！'))
+                  } else {
+                    callback()
+                  }
+                },
+                trigger: 'change'
+              }]
             }
+          }
+        }
+      },
+      computed: {
+        getMenu () {
+          let menu = this.$router.options.routes
+          const paths = ['/', '*', '/login', 'edit/:id']
+          menu.forEach(obj => {
+            obj.meta = obj.meta || {}
+            obj.meta.show = !paths.includes(obj.path)
+            let count = 0
+            obj.children && obj.children.forEach(item => {
+              item.meta = item.meta || {}
+              item.meta.show = (count++, !paths.includes(item.path))
+            })
+            obj.meta.showSub = obj.meta.show && count > 0
+          })
+          return menu
         },
-        computed: {
-            getMenu(){
-                let menu = this.$router.options.routes;
-                const paths = ['/','*','/login','edit/:id'];
-                menu.forEach(obj => {
-                    obj.meta = obj.meta||{};
-                    obj.meta.show = !paths.includes(obj.path);
-                    let count = 0;
-                    obj.children && obj.children.forEach(item=>{
-                        item.meta = item.meta||{};
-                        item.meta.show = (count++,!paths.includes(item.path));
-                    });
-                    obj.meta.showSub = obj.meta.show && count > 0;
-                });
-                return menu;
-            },
-            getUserType(){
-                return common.user_type[this.userInfo.user_type] || '未知';
-            }
+        getUserType () {
+          return common.user_type[this.userInfo.user_type] || '未知'
+        }
+      },
+      mounted () {
+        act.start = window.Element.prototype.animate !== undefined ? 'off' : null
+        this.updateCurMenu()
+        storage.get('userInfo', obj => {
+          this.$store.dispatch('set_userInfo', obj.userInfo)
+          this.userInfo = obj.userInfo
+          this.setUserInfo()
+        })
+  },
+      methods: {
+        // 上传头像
+        upPic () {
+          this.upUserPic.visible = true
+          this.$refs.picForm && this.$refs.picForm.resetFields()
         },
-        mounted(){
-            act.start = window.Element.prototype.animate !== undefined ? 'off' : null;
-            this.updateCurMenu();
-            storage.get('userInfo',obj=>{
-                this.$store.dispatch('set_userInfo',obj.userInfo);
-                this.userInfo = obj.userInfo;
-                this.setUserInfo();
-            });
+        upImg () {
+          this.$refs.upload.SelectFile()
         },
-        methods: {
-            //上传头像
-            upPic(){
-                this.upUserPic.visible = true;
-                this.$refs.picForm && this.$refs.picForm.resetFields();
-            },
-            upImg(){
-                this.$refs.upload.SelectFile();
-            },
-            upUserImg(){
-                this.$refs.picForm.validate(v => {
-                    if (v) {
-                        ajax.call(this, '/upUserPic', {pic:this.upUserPic.pic}, (data, err) => {
-                            if (!err) {
-                                storage.get('userInfo',obj=>{
-                                    obj.userInfo.user_pic = data.pic;
-                                    storage.set('userInfo',obj);
-                                    Array.from(document.querySelectorAll(".top_right p,.user_info dt")).forEach(d => {
-                                        d.style.backgroundImage = 'url(' + data.pic + ')';
-                                        d.textContent = '';
-                                    })
-                                });
-                                this.upUserPic.visible = false;
-                            }
-                        })
-                    }
-                });
-            },
-            successUpload(data){
-                this.upUserPic.pic = data.filename;
-            },
-            //点击任意地方关闭用户信息
-            homeClick(){
-                act.div && (act.div.style.opacity = 0);
-                if (act.start === 'on') {
-                    act.parameter.fill = 'backwards';
-                    act.start = 'off';
-                    act.obj.reverse();
-                }
-            },
-            //显示修改密码
-            showChange(){
-                this.password.visible = true;
-                this.$refs.password && this.$refs.password.resetFields();
-            },
-            //修改密码
-            changePassword(){
-                this.$refs.password.validate(valid => {
-                    if (valid) {
-                        this.password.loading = true;
-                        ajax.call(this, '/changePassword', this.password.form, (data, err) => {
-                            this.password.loading = false;
-                            if (!err) {
-                                this.$message({
-                                    message: '密码修改成功！请记住新密码。',
-                                    type: 'success'
-                                });
-                                storage.remove('userInfo');
-                                this.$router.push('/login');
-                            }
-                        })
-                    }
-                })
-            },
-            //退出登录
-            loginOut(){
-                storage.remove('userInfo');
-                this.$router.push('/login');
-            },
-            showUserInfo(){
-                act.div = document.querySelector(".user_info");
-                act.div.style.opacity = 1;
-                act.div.style.top = '60px';
-                if (act.start === 'off') {
-                    act.start = 'on';
-                    act.parameter.fill = 'forwards';
-                    act.obj = act.div.animate(act.keyframes, act.parameter);
-                    act.obj.addEventListener('finish',()=>{
-                        act.div.style.top = act.start === 'on' ? '60px' : '-200px';
-                    },false)
-                }
-            },
-            setUserInfo(){
-                //因不想太多变量和条件判断及style在html里，在此使用js来修改dom
-                let dom = document.querySelectorAll(".top_right p,.user_info dt");
-                if (dom.length) {
-                    const v = this.userInfo;
-                    let name = v.user_name.replace(/[a-z]+/g, '');
-                    name = name ? name.slice(0, 1) : v.user_name.slice(0, 2);
-                    Array.from(dom).forEach(d => {
-                        d.removeAttribute('style');
-						d.style.backgroundColor = '#f60';
-                        d.style.color = '#fff';
-                        if (v.user_pic) {
-                            d.style.backgroundImage = 'url(' + v.user_pic + ')';
-                            d.style.textContent = "";
-                        } else {
-                            d.textContent = name.toUpperCase();
-                        }
+        upUserImg () {
+          this.$refs.picForm.validate(v => {
+            if (v) {
+              ajax.call(this, '/upUserPic', {pic: this.upUserPic.pic}, (data, err) => {
+                if (!err) {
+                  storage.get('userInfo', obj => {
+                    obj.userInfo.user_pic = data.pic
+                    storage.set('userInfo', obj)
+                    Array.from(document.querySelectorAll('.top_right p,.user_info dt')).forEach(d => {
+                      d.style.backgroundImage = 'url(' + data.pic + ')'
+                      d.textContent = ''
                     })
+                  })
+                  this.upUserPic.visible = false
                 }
-            },
-            updateCurMenu(route){
-                route = route || this.$route;
-                if (route.matched.length) {
-                    this.routes = route.matched;
-                    let title = '';
-                    route.matched.forEach(obj=>{
-                        title += obj.meta.title + ' - ';
-                    });
-                    this.headerCurRouter = route.path;
-                    document.title = title + common.web_name;
-                } else {
-                    this.$router.push('/*');
-                    this.headerCurRouter = '/404';
-                    document.title = '404 - ' + common.web_name;
-                }
-            },
-        },
-        mixins:[common.mixin],
-        components,
-        watch: {
-            $route(to){
-                this.updateCurMenu(to);
+              })
             }
+          })
         },
+        successUpload (data) {
+          this.upUserPic.pic = data.filename
+        },
+        // 点击任意地方关闭用户信息
+        homeClick () {
+          act.div && (act.div.style.opacity = 0)
+          if (act.start === 'on') {
+            act.parameter.fill = 'backwards'
+            act.start = 'off'
+            act.obj.reverse()
+          }
+        },
+        // 显示修改密码
+        showChange () {
+          this.password.visible = true
+          this.$refs.password && this.$refs.password.resetFields()
+        },
+        // 修改密码
+        changePassword () {
+          this.$refs.password.validate(valid => {
+            if (valid) {
+              this.password.loading = true
+              ajax.call(this, '/changePassword', this.password.form, (data, err) => {
+                this.password.loading = false
+                if (!err) {
+                  this.$message({
+                    message: '密码修改成功！请记住新密码。',
+                    type: 'success'
+                  })
+                  storage.remove('userInfo')
+                  this.$router.push('/login')
+                }
+              })
+            }
+          })
+        },
+        // 退出登录
+        loginOut () {
+          storage.remove('userInfo')
+          this.$router.push('/login')
+        },
+        showUserInfo () {
+          act.div = document.querySelector('.user_info')
+          act.div.style.opacity = 1
+          act.div.style.top = '60px'
+          if (act.start === 'off') {
+            act.start = 'on'
+            act.parameter.fill = 'forwards'
+            act.obj = act.div.animate(act.keyframes, act.parameter)
+            act.obj.addEventListener('finish', () => {
+              act.div.style.top = act.start === 'on' ? '60px' : '-200px'
+            }, false)
+          }
+        },
+        setUserInfo () {
+          // 因不想太多变量和条件判断及style在html里，在此使用js来修改dom
+          let dom = document.querySelectorAll('.top_right p,.user_info dt')
+          if (dom.length) {
+            const v = this.userInfo
+            let name = v.user_name.replace(/[a-z]+/g, '')
+            name = name ? name.slice(0, 1) : v.user_name.slice(0, 2)
+            Array.from(dom).forEach(d => {
+              d.removeAttribute('style')
+              d.style.backgroundColor = '#f60'
+              d.style.color = '#fff'
+              if (v.user_pic) {
+                d.style.backgroundImage = 'url(' + v.user_pic + ')'
+                d.style.textContent = ''
+              } else {
+                d.textContent = name.toUpperCase()
+              }
+            })
+          }
+        },
+        updateCurMenu (route) {
+          route = route || this.$route
+          if (route.matched.length) {
+            this.routes = route.matched
+            let title = ''
+            route.matched.forEach(obj => {
+              title += obj.meta.title + ' - '
+            })
+            this.headerCurRouter = route.path
+            document.title = title + common.web_name
+          } else {
+            this.$router.push('/*')
+            this.headerCurRouter = '/404'
+            document.title = '404 - ' + common.web_name
+          }
+        }
+      },
+      mixins: [common.mixin],
+      components,
+      watch: {
+        $route (to) {
+          this.updateCurMenu(to)
+        }
+      }
     }
 </script>
 

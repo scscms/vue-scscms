@@ -8,14 +8,14 @@
 
 <script>
     export default {
-        name: 'app',
-        watch:{
-            $route(to,from){
-                if (!to.matched.length) {
-                    this.$router.push('/404');
-                }
-            }
+      name: 'app',
+      watch: {
+        $route (to, from) {
+          if (!to.matched.length) {
+            this.$router.push('/404')
+          }
         }
+      }
     }
 </script>
 

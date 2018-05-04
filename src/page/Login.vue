@@ -43,199 +43,199 @@
 </template>
 
 <script>
-    import common from 'common';
-    import {ajax, storage} from 'utils';
-    export default {
-        data () {
-            const _this = this;
-            return {
-                data: {
-                    user_name: '',
-                    pass_word: ''
+    import common from 'common'
+import {ajax, storage} from 'utils'
+export default {
+      data () {
+        const _this = this
+        return {
+          data: {
+            user_name: '',
+            pass_word: ''
+          },
+          placeholder: {
+            name: common.name_txt,
+            pass: common.pass_txt,
+            email: common.email_txt
+          },
+          title: {
+            register: '用户注册',
+            retrieve: '找回密码'
+          },
+          type: 'register', // register|retrieve
+          loading: false,
+          rule_data: {
+            user_name: [{
+              required: true,
+              message: '帐号不能为空！',
+              trigger: 'change'
+            }, {
+              pattern: common.name_reg,
+              message: common.name_txt,
+              trigger: 'change'
+            }],
+            pass_word: [{
+              required: true,
+              message: '密码不能为空！',
+              trigger: 'change'
+            }, {
+              pattern: common.pass_reg,
+              message: common.pass_txt,
+              trigger: 'change'
+            }]
+          },
+          err: '',
+          register: {
+            visible: false,
+            loading: false,
+            rules: {
+              user_name: [{
+                required: true,
+                message: '用户帐号不能为空！',
+                trigger: 'change'
+              }, {
+                validator: (rule, value, callback) => {
+                  if (!common.name_reg.test(value)) {
+                    callback(new Error(common.name_txt))
+                  } else if (_this.err.includes('帐号')) {
+                    callback(new Error(_this.err))
+                  } else {
+                    callback()
+                  }
                 },
-                placeholder:{
-                    name:common.name_txt,
-                    pass:common.pass_txt,
-                    email:common.email_txt,
+                trigger: 'change'
+              }],
+              pass_word: [{
+                required: true,
+                message: '密码不能为空！',
+                trigger: 'change'
+              }, {
+                validator: (rule, value, callback) => {
+                  if (!common.pass_reg.test(value)) {
+                    callback(new Error(common.pass_txt))
+                  } else {
+                    _this.form.pass_words && _this.$refs.regForm.validateField('pass_words')
+                    callback()
+                  }
                 },
-                title:{
-                    register:'用户注册',
-                    retrieve:'找回密码'
+                trigger: 'change'
+              }],
+              pass_words: [{
+                required: true,
+                message: '确认密码不能为空！',
+                trigger: 'change'
+              }, {
+                validator: (rule, value, callback) => {
+                  if (!common.pass_reg.test(value)) {
+                    callback(new Error(common.pass_txt))
+                  } else if (_this.form.pass_word !== _this.form.pass_words) {
+                    callback(new Error('密码与确认密码不相同！'))
+                  } else {
+                    callback()
+                  }
                 },
-                type:'register',//register|retrieve
-                loading: false,
-                rule_data: {
-                    user_name: [{
-                        required: true,
-                        message: '帐号不能为空！',
-                        trigger: 'change'
-                    }, {
-                        pattern: common.name_reg,
-                        message: common.name_txt,
-                        trigger: 'change'
-                    }],
-                    pass_word: [{
-                        required: true,
-                        message: '密码不能为空！',
-                        trigger: 'change'
-                    }, {
-                        pattern: common.pass_reg,
-                        message: common.pass_txt,
-                        trigger: 'change'
-                    }],
+                trigger: 'change'
+              }],
+              user_email: [{
+                required: true,
+                message: '邮箱不能为空！',
+                trigger: 'change'
+              }, {
+                validator: (rule, value, callback) => {
+                  if (!common.email_reg.test(value)) {
+                    callback(new Error(common.email_txt))
+                  } else if (_this.err.includes('邮箱')) {
+                    callback(new Error(_this.err))
+                  } else {
+                    callback()
+                  }
                 },
-                err:'',
-                register:{
-                    visible:false,
-                    loading:false,
-                    rules: {
-                        user_name: [{
-                            required: true,
-                            message: '用户帐号不能为空！',
-                            trigger: 'change'
-                        }, {
-                            validator: (rule, value, callback) => {
-                                if (!common.name_reg.test(value)) {
-                                    callback(new Error(common.name_txt));
-                                } else if (_this.err.includes('帐号')) {
-                                    callback(new Error(_this.err));
-                                } else {
-                                    callback();
-                                }
-                            },
-                            trigger: 'change'
-                        }],
-                        pass_word: [{
-                            required: true,
-                            message: '密码不能为空！',
-                            trigger: 'change'
-                        }, {
-                            validator: (rule, value, callback) => {
-                                if(!common.pass_reg.test(value)){
-                                    callback(new Error(common.pass_txt));
-                                } else {
-                                    _this.form.pass_words && _this.$refs.regForm.validateField('pass_words');
-                                    callback();
-                                }
-                            },
-                            trigger: 'change'
-                        }],
-                        pass_words: [{
-                            required: true,
-                            message: '确认密码不能为空！',
-                            trigger: 'change'
-                        }, {
-                            validator: (rule, value, callback) => {
-                                if (!common.pass_reg.test(value)) {
-                                    callback(new Error(common.pass_txt));
-                                } else if (_this.form.pass_word !== _this.form.pass_words) {
-                                    callback(new Error('密码与确认密码不相同！'));
-                                } else {
-                                    callback();
-                                }
-                            },
-                            trigger: 'change'
-                        }],
-                        user_email: [{
-                            required: true,
-                            message: '邮箱不能为空！',
-                            trigger: 'change'
-                        }, {
-                            validator: (rule, value, callback) => {
-                                if (!common.email_reg.test(value)) {
-                                    callback(new Error(common.email_txt));
-                                } else if (_this.err.includes('邮箱')) {
-                                    callback(new Error(_this.err));
-                                } else {
-                                    callback();
-                                }
-                            },
-                            trigger: 'change'
-                        }]
-                    }
-                },
-                form:{
-                    user_name:'',
-                    pass_word:'',
-                    pass_words:'',
-                    user_email:''
-                }
-            };
-        },
-        mounted(){
-            storage.remove('token');
-            let key = this.$route.query.active || this.$route.query.find;
-            if (key && common.deal_results.hasOwnProperty(key)) {
-                let msg = this.$route.query.active ? '激活用户' : '密码找回';
-                this.$notify({
-                    title: '系统通知',
-                    duration: 10000,
-                    message: common.deal_results[key].replace('#', msg),
-                    type: key === 'success' ? 'success' : 'error'
-                });
+                trigger: 'change'
+              }]
             }
-        },
-        methods: {
-            registers(){
-                this.$refs.regForm.validate(valid => {
-                    if (valid) {
-                        this.$confirm('确定要' + this.title[this.type] + '？注意：操作后需要邮箱激活帐号！', '系统提醒', {
-                            confirmButtonText: '确定',
-                            cancelButtonText: '取消',
-                            type: 'warning'
-                        }).then(() => {
-                            this.register.loading = true;
-                            ajax.call(this, '/' + this.type, this.form, (data, err) => {
-                                this.register.loading = false;
-                                if (!err) {
-                                    this.register.visible = false;
-                                    let msg = this.type === 'register' ? '注册用户' : '找回密码';
-                                    this.$message({
-                                        message: (data.emailErr ? '#成功。但激活邮件发送失败，请联系管理员！' : '恭喜您#成功,请登录邮箱激活帐号！').replace('#', msg),
-                                        type: data.emailErr ? 'warning' : 'success'
-                                    });
-                                } else {
-                                    this.err = err;
-                                    if (err.includes('帐号') || err.includes('邮箱')) {
-                                        this.$refs.regForm.validateField(err.includes('帐号') ? 'user_name' : 'user_email');
-                                    }
-                                }
-                            })
-                        }).catch(() => {
-                        });
-                    }
-                });
-            },
-            openReg(type){
-                this.$refs.regForm && this.$refs.regForm.resetFields();
-                this.type = type;
-                this.register.visible = true;
-            },
-            login() {
-                this.$refs.loginForm.validate(valid => {
-                    if (valid && !this.loading) {
-                        this.loading = true;
-                        ajax.call(this, '/login', this.data, (data, err) => {
-                            this.loading = false;
-                            if (!err) {
-                                storage.set('userInfo', data, () => {
-                                    this.$router.replace(this.$route.query.url||'/article/list');
-                                })
-                            }
-                        })
-                    }
-                })
-            }
-        },
-        watch: {
-            'form.user_name'(){
-                if(this.err.includes('帐号'))this.err = '';
-            },
-            'form.user_email'(){
-                if(this.err.includes('邮箱'))this.err = '';
-            }
+          },
+          form: {
+            user_name: '',
+            pass_word: '',
+            pass_words: '',
+            user_email: ''
+          }
         }
-    };
+  },
+      mounted () {
+        storage.remove('token')
+        let key = this.$route.query.active || this.$route.query.find
+        if (key && common.deal_results.hasOwnProperty(key)) {
+          let msg = this.$route.query.active ? '激活用户' : '密码找回'
+          this.$notify({
+            title: '系统通知',
+            duration: 10000,
+            message: common.deal_results[key].replace('#', msg),
+            type: key === 'success' ? 'success' : 'error'
+          })
+        }
+      },
+      methods: {
+        registers () {
+          this.$refs.regForm.validate(valid => {
+            if (valid) {
+              this.$confirm('确定要' + this.title[this.type] + '？注意：操作后需要邮箱激活帐号！', '系统提醒', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.register.loading = true
+                ajax.call(this, '/' + this.type, this.form, (data, err) => {
+                  this.register.loading = false
+                  if (!err) {
+                    this.register.visible = false
+                    let msg = this.type === 'register' ? '注册用户' : '找回密码'
+                    this.$message({
+                      message: (data.emailErr ? '#成功。但激活邮件发送失败，请联系管理员！' : '恭喜您#成功,请登录邮箱激活帐号！').replace('#', msg),
+                      type: data.emailErr ? 'warning' : 'success'
+                    })
+                  } else {
+                    this.err = err
+                    if (err.includes('帐号') || err.includes('邮箱')) {
+                      this.$refs.regForm.validateField(err.includes('帐号') ? 'user_name' : 'user_email')
+                    }
+                  }
+                })
+              }).catch(() => {
+              })
+            }
+          })
+        },
+        openReg (type) {
+          this.$refs.regForm && this.$refs.regForm.resetFields()
+          this.type = type
+          this.register.visible = true
+        },
+        login () {
+          this.$refs.loginForm.validate(valid => {
+            if (valid && !this.loading) {
+              this.loading = true
+              ajax.call(this, '/login', this.data, (data, err) => {
+                this.loading = false
+                if (!err) {
+                  storage.set('userInfo', data, () => {
+                    this.$router.replace(this.$route.query.url || '/article/list')
+                  })
+                }
+              })
+            }
+          })
+        }
+      },
+      watch: {
+        'form.user_name' () {
+          if (this.err.includes('帐号')) this.err = ''
+        },
+        'form.user_email' () {
+          if (this.err.includes('邮箱')) this.err = ''
+        }
+      }
+    }
 </script>
 
 <style lang="less">

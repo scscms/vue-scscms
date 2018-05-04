@@ -14,31 +14,31 @@
 
 <script>
     export default {
-        name: 'Sidebar',
-        props:{
-            beforeClose:{
-                default: null
-            }
-        },
-        data() {
-            return {
-                sidebar:"sidebar",
-                slide_class:""
-            }
-        },
-        methods: {
-            close(){
-                if(typeof this.beforeClose === 'function'){
-                    this.beforeClose(this.open);
-                }else{
-                    this.open(false);
-                }
-            },
-            open(param) {
-                this.slide_class = param ? "slide_in":"slide_out";
-                this.$emit("SidebarOpen",!!param);
-            }
+      name: 'Sidebar',
+      props: {
+        beforeClose: {
+          default: null
         }
+      },
+      data () {
+        return {
+          sidebar: 'sidebar',
+          slide_class: ''
+        }
+      },
+      methods: {
+        close () {
+          if (typeof this.beforeClose === 'function') {
+            this.beforeClose(this.open)
+          } else {
+            this.open(false)
+          }
+        },
+        open (param) {
+          this.slide_class = param ? 'slide_in' : 'slide_out'
+          this.$emit('SidebarOpen', !!param)
+        }
+      }
     }
 </script>
 <style lang="less">

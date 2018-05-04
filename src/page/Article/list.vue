@@ -70,253 +70,255 @@
     </div>
 </template>
 <script type="text/javascript">
-    import {ajax,storage} from 'utils';
-    import common from 'common';
-    import Sidebar from 'components/Sidebar.vue';
-    module.exports = {
-        name: 'list',
-        data() {
-            return {
-                page_grade:common.page_grade,
-                grade:{
-                    updateArticle: !0,
-                    passedArticle: !0,
-                    deleteArticle: !0,
-                },
-                userInfo:{},
-                read_type:common.user_type,
-                sort_data:[],
-                sort_id:[],
-                defaultProps: {
-                    children: 'children',
-                    label: 'sort_name',
-                    value: 'id'
-                },
-                search_data: {
-                    title: '',
-                    sort_id: '',
-                    read_type: '',
-                    page: 1,
-                    pageSize: 10
-                },
-                //表格数据
-                multipleSelection:[],
-                table_data: {
-                    columns: [
-                        {"key": "title", "name": "文章标题", minWidth: 150},
-                        {"key": "sort_name", "name": "分类名称", width: 120},
-                        {"key": "user_name", "name": "作者", width: 120},
-                        {"key": "passed", "name": "状态", width: 80},
-                        {"key": "read_type", "name": "阅读权限", width: 120},
-                        {"key": "create_time", "name": "发表时间", minWidth:120},
-                        {"key": "operations", "name": "操作", width: 135}
-                    ],
-                    total: 0,
-                    data: []
-                },
-                loading:false,
-                article:{
-                    title:'',
-                    sort_name:'',
-                    user_name:'',
-                    read_type:'',
-                    create_time:'',
-                    description:'',
-                    content:'',
-                    prev:{id:0,title:''},
-                    next:{id:0,title:''}
-                }
-            }
-        },
-        methods: {
-            //删除文章
-            deleteArticle(arr){
-                if(!arr){
-                    if(this.multipleSelection.length){
-                        arr = this.multipleSelection;
-                    }else{
-                        return this.$message("请先选择文章");
-                    }
-                }
-                this.$confirm(`确定要${arr.length>1?'批量删除文章':'删除此文章'}吗？`, '系统提醒', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    ajax.call(this, '/deleteArticle', {ids:arr.map(o=>o.id).join(",")}, (d, err) => {
-                        !err && this.ajaxData();
-                    })
-                }).catch(() => {});
-            },
-            passedArticle(arr,pass){
-                if(!arr){
-                    if(this.multipleSelection.length){
-                        arr = this.multipleSelection;
-                    }else{
-                        return this.$message("请先选择文章");
-                    }
-                }
-                ajax.call(this, '/passedArticle', {ids:arr.map(o=>o.id).join(","),passed:pass}, (obj, err) => {
-                    if (!err) {
-                        arr.forEach(row=>{
-                            row.passed = obj.passed;
-                        })
-                    }
-                });
-            },
-            selectable(row){
-                let user = this.userInfo;
-                return user.user_type < 3||(!this.grade.deleteArticle||!this.grade.passedArticle) && user.id !== row.user_id;
-            },
-            add(){
-                this.$router.push('/article/add');
-            },
-            handleSelectionChange(val){
-                this.multipleSelection = val;
-            },
-            createButton(h, row, code, text){
-                let self = this;
-                let dis = false;
-                let user = this.userInfo;
-                if(code === 'passed'){
-                    dis = this.grade.passedArticle;
-                }else if(code === 'edit'){
-                    dis = user.user_type > 2 && user.id !== row.user_id ? true : this.grade.updateArticle;
-                }else if(code === 'delete'){
-                    dis = user.user_type > 2 && user.id !== row.user_id ? true : this.grade.deleteArticle;
-                }
-                return h('el-button', {
-                    props: {size: 'small',disabled:dis},
-                    on: {
-                        click(){
-                            self.healColumnClick(code, row)
-                        }
-                    }
-                },[text])
-            },
-            //格式化输出内容
-            columnFormatter(row, column){
-                let self = this;
-                let key = column.property;
-                let str = row[key]||'';
-                let h = this.$createElement;
-                if(key === 'create_time'){
-                    str = str.replace(/[^-\d].+/,'');
-                }else if(key === 'title'){
-                    return h('span',{
-                        style:{cursor:'pointer'},
-                        on:{
-                            click(){
-                                self.healColumnClick('view', row);
-                            }
-                        }
-                    },[str]);
-                }else if(key === 'passed'){
-                    return this.createButton(h,row,key,str === 1?'审核':'通过');
-                }else if(key === 'operations'){
-                    return h('div',[
-                        this.createButton(h,row,'edit','编辑'),
-                        this.createButton(h,row,'delete','删除'),
-                    ]);
-                }else if(key === 'read_type'){
-                    str = common.user_type[str]||'未知';
-                }
-                return str;
-            },
-            //处理列、按钮点击
-            healColumnClick(code, row){
-                if(code ==='edit'){
-                    this.$router.push('/article/edit/'+row.id);
-                }else if(code ==='view'){
-                    this.$refs.view.open(!0);
-                    this.getActiveContent(row.id);
-                }else if(code ==='passed'){
-                    this.passedArticle([row],row.passed===1?0:1);
-                }else if(code === 'delete'){
-                    this.deleteArticle([row]);
-                }
-            },
-            getActiveContent(id){
-                this.loading = !0;
-                ajax.call(this, '/getArticleById', {id}, (obj, err) => {
-                    this.loading = !1;
-                    if (err) {
-                        this.$refs.view.open(!1);
-                    }else{
-                        console.log(JSON.stringify(obj));
-                        Object.getOwnPropertyNames(this.article).forEach(key => {
-                            this.$set(this.article,key,obj[key]);
-                        });
-                        this.article.create_time = new Date(this.article.create_time).toLocaleDateString();
-                        //显示分类
-                        const cid = obj.sort_id;
-                        let hasFind = false;
-                        let cb = (array,a)=>{
-                            !hasFind && array && array.forEach(item=>{
-                                a = a||[];
-                                let _a = [].concat(a);
-                                _a.push(item.id);
-                                if(item.id === cid){
-                                    hasFind = true;
-                                    this.sort_id = _a;
-                                }else{
-                                    cb(item.children,_a);
-                                }
-                            })
-                        };
-                        cb(this.sort_data);
-                    }
-                })
-            },
-            //ajax请求列表数据
-            ajaxData(){
-                let p = this.sort_id;
-                this.search_data.sort_id = p.length ? p.slice(-1)[0] : '';
-                ajax.call(this, '/listArticle', this.search_data, (obj, err) => {
-                    if (!err) {
-                        this.table_data.data = obj.data;
-                        this.table_data.total = obj.total;
-                        this.search_data.page = obj.page;
-                    }
-                });
-            },
-            //点击查询
-            onSearch() {
-                this.ajaxData();
-            },
-            handleCurrentChange(page){
-                if(page !== this.search_data.page){
-                    this.search_data.page = page;
-                    this.ajaxData();
-                }
-            },
-        },
-        mounted() {
-            this.ajaxData();
-            ajax.call(this, '/listSort', {}, (data, err) => {
-                if (!err) {
-                    let arr = data.data;
-                    arr.sort((a, b) => a.parent_id > b.parent_id ? 1 : -1);
-                    for (let i = arr.length; i--;) {
-                        if (arr[i].parent_id > 0) {
-                            let obj = arr.pop();
-                            arr.forEach(item => {
-                                if (item.id === obj.parent_id) {
-                                    item.children = item.children||[];
-                                    item.children.push(obj);
-                                }
-                            })
-                        }
-                    }
-                    this.sort_data = arr;
-                }
-            });
-        },
-        mixins:[common.mixin],
-        components:{
-            Sidebar
-        }
+import {ajax} from 'utils'
+import common from 'common'
+import Sidebar from 'components/Sidebar.vue'
+module.exports = {
+  name: 'list',
+  data () {
+    return {
+      page_grade: common.page_grade,
+      grade: {
+        updateArticle: !0,
+        passedArticle: !0,
+        deleteArticle: !0
+      },
+      userInfo: {},
+      read_type: common.user_type,
+      sort_data: [],
+      sort_id: [],
+      defaultProps: {
+        children: 'children',
+        label: 'sort_name',
+        value: 'id'
+      },
+      search_data: {
+        title: '',
+        sort_id: '',
+        read_type: '',
+        page: 1,
+        pageSize: 10
+      },
+      // 表格数据
+      multipleSelection: [],
+      table_data: {
+        columns: [
+          {'key': 'title', 'name': '文章标题', minWidth: 150},
+          {'key': 'sort_name', 'name': '分类名称', width: 120},
+          {'key': 'user_name', 'name': '作者', width: 120},
+          {'key': 'passed', 'name': '状态', width: 80},
+          {'key': 'read_type', 'name': '阅读权限', width: 120},
+          {'key': 'create_time', 'name': '发表时间', minWidth: 120},
+          {'key': 'operations', 'name': '操作', width: 135}
+        ],
+        total: 0,
+        data: []
+      },
+      loading: false,
+      article: {
+        title: '',
+        sort_name: '',
+        user_name: '',
+        read_type: '',
+        create_time: '',
+        description: '',
+        content: '',
+        prev: {id: 0, title: ''},
+        next: {id: 0, title: ''}
+      }
     }
+  },
+  methods: {
+    // 删除文章
+    deleteArticle (arr) {
+      if (!arr) {
+        if (this.multipleSelection.length) {
+          arr = this.multipleSelection
+        } else {
+          return this.$message('请先选择文章')
+        }
+      }
+      this.$confirm(`确定要${arr.length > 1 ? '批量删除文章' : '删除此文章'}吗？`, '系统提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        ajax.call(this, '/deleteArticle', {ids: arr.map(o => o.id).join(',')}, (d, err) => {
+          !err && this.ajaxData()
+        })
+      }).catch(() => {})
+    },
+    passedArticle (arr, pass) {
+      if (!arr) {
+        if (this.multipleSelection.length) {
+          arr = this.multipleSelection
+        } else {
+          return this.$message('请先选择文章')
+        }
+      }
+      ajax.call(this, '/passedArticle', {ids: arr.map(o => o.id).join(','), passed: pass}, (obj, err) => {
+        if (!err) {
+          arr.forEach(row => {
+            row.passed = obj.passed
+          })
+        }
+      })
+    },
+    selectable (row) {
+      let user = this.userInfo
+      let result = !this.grade.deleteArticle || !this.grade.passedArticle
+      result = result && user.id !== row.user_id
+      return user.user_type < 3 || result
+    },
+    add () {
+      this.$router.push('/article/add')
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+    },
+    createButton (h, row, code, text) {
+      let self = this
+      let dis = false
+      let user = this.userInfo
+      if (code === 'passed') {
+        dis = this.grade.passedArticle
+      } else if (code === 'edit') {
+        dis = user.user_type > 2 && user.id !== row.user_id ? true : this.grade.updateArticle
+      } else if (code === 'delete') {
+        dis = user.user_type > 2 && user.id !== row.user_id ? true : this.grade.deleteArticle
+      }
+      return h('el-button', {
+        props: {size: 'small', disabled: dis},
+        on: {
+          click () {
+            self.healColumnClick(code, row)
+          }
+        }
+      }, [text])
+    },
+    // 格式化输出内容
+    columnFormatter (row, column) {
+      let self = this
+      let key = column.property
+      let str = row[key] || ''
+      let h = this.$createElement
+      if (key === 'create_time') {
+        str = str.replace(/[^-\d].+/, '')
+      } else if (key === 'title') {
+        return h('span', {
+          style: {cursor: 'pointer'},
+          on: {
+            click () {
+              self.healColumnClick('view', row)
+            }
+          }
+        }, [str])
+      } else if (key === 'passed') {
+        return this.createButton(h, row, key, str === 1 ? '审核' : '通过')
+      } else if (key === 'operations') {
+        return h('div', [
+          this.createButton(h, row, 'edit', '编辑'),
+          this.createButton(h, row, 'delete', '删除')
+        ])
+      } else if (key === 'read_type') {
+        str = common.user_type[str] || '未知'
+      }
+      return str
+    },
+    // 处理列、按钮点击
+    healColumnClick (code, row) {
+      if (code === 'edit') {
+        this.$router.push('/article/edit/' + row.id)
+      } else if (code === 'view') {
+        this.$refs.view.open(!0)
+        this.getActiveContent(row.id)
+      } else if (code === 'passed') {
+        this.passedArticle([row], row.passed === 1 ? 0 : 1)
+      } else if (code === 'delete') {
+        this.deleteArticle([row])
+      }
+    },
+    getActiveContent (id) {
+      this.loading = !0
+      ajax.call(this, '/getArticleById', {id}, (obj, err) => {
+        this.loading = !1
+        if (err) {
+          this.$refs.view.open(!1)
+        } else {
+          console.log(JSON.stringify(obj))
+          Object.getOwnPropertyNames(this.article).forEach(key => {
+            this.$set(this.article, key, obj[key])
+          })
+          this.article.create_time = new Date(this.article.create_time).toLocaleDateString()
+          // 显示分类
+          const cid = obj.sort_id
+          let hasFind = false
+          let cb = (array, a) => {
+            !hasFind && array && array.forEach(item => {
+              a = a || []
+              let _a = [].concat(a)
+              _a.push(item.id)
+              if (item.id === cid) {
+                hasFind = true
+                this.sort_id = _a
+              } else {
+                cb(item.children, _a)
+              }
+            })
+          }
+          cb(this.sort_data)
+        }
+      })
+    },
+    // ajax请求列表数据
+    ajaxData () {
+      let p = this.sort_id
+      this.search_data.sort_id = p.length ? p.slice(-1)[0] : ''
+      ajax.call(this, '/listArticle', this.search_data, (obj, err) => {
+        if (!err) {
+          this.table_data.data = obj.data
+          this.table_data.total = obj.total
+          this.search_data.page = obj.page
+        }
+      })
+    },
+    // 点击查询
+    onSearch () {
+      this.ajaxData()
+    },
+    handleCurrentChange (page) {
+      if (page !== this.search_data.page) {
+        this.search_data.page = page
+        this.ajaxData()
+      }
+    }
+  },
+  mounted () {
+    this.ajaxData()
+    ajax.call(this, '/listSort', {}, (data, err) => {
+      if (!err) {
+        let arr = data.data
+        arr.sort((a, b) => a.parent_id > b.parent_id ? 1 : -1)
+        for (let i = arr.length; i--;) {
+          if (arr[i].parent_id > 0) {
+            let obj = arr.pop()
+            arr.forEach(item => {
+              if (item.id === obj.parent_id) {
+                item.children = item.children || []
+                item.children.push(obj)
+              }
+            })
+          }
+        }
+        this.sort_data = arr
+      }
+    })
+  },
+  mixins: [common.mixin],
+  components: {
+    Sidebar
+  }
+}
 </script>
 <style lang="less">
     .grid-table{
