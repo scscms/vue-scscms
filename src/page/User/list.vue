@@ -103,7 +103,7 @@ export default {
       }
     },
     selectable(row) {
-      return this.grade.deleteUser && (row.user_type === '0' || this.userType < row.user_type)
+      return !this.grade.deleteUser && (row.user_type === 0 || this.userType < row.user_type)
     },
     createButton(h, row, code, text) {
       let self = this

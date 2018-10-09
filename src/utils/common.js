@@ -63,7 +63,7 @@ export default {
           const p = this.page_grade
           for (var k in g) {
             if (g.hasOwnProperty(k)) {
-              g[k] = p[k] < o.user_type
+              g[k] = o.user_type > p[k]
             }
           }
         }

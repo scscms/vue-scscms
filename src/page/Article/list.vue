@@ -219,7 +219,7 @@ export default {
           }
         }, [str])
       } else if (key === 'passed') {
-        return this.createButton(h, row, key, str === 1 ? '审核' : '通过')
+        return str === 1 ? '通过' : this.createButton(h, row, key, '审核')
       } else if (key === 'operations') {
         return h('div', [
           this.createButton(h, row, 'edit', '编辑'),

@@ -166,7 +166,6 @@ export default {
   },
   mounted () {
     utils.storage.remove('userInfo')
-    console.log(utils.storage.get('userInfo'))
     let key = this.$route.query.active || this.$route.query.find
     if (key && common.deal_results.hasOwnProperty(key)) {
       let msg = this.$route.query.active ? '激活用户' : '密码找回'
