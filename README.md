@@ -1,6 +1,6 @@
 # vue-scscmsV2.0 <sup>webpack V4版</sup>
 
-基于koa2+mysql+vue2.0+Element阳光内容管理系统
+基于koa2+mysql+vue2.0+Element+ESlint阳光内容管理系统
 
     简单文章系统模板，含注册、登录、权限管理、用户管理范例。旨在提供一个完整的前后台node+vue2.0开发的脚手架，由您按需扩展。
 
@@ -13,8 +13,7 @@
 
 ### 在线预览
 ![image](static/readme.png)
-
-[点击查看在线DEMO](http://103.27.4.146:3001)
+<a href="http://103.27.4.146:3001/login" target="_blank">点击查看在线DEMO</a>
 
 **测试帐号**
 
@@ -32,7 +31,7 @@ npm install
 
 #### Node.js要求：
 
-基于 Koa2, 使用了异步函数，其中Node.js版本要求不能底于v7.6.0
+基于 Koa2, 使用了异步函数，其中Node.js版本v8.9 或更高版本 (推荐 8.11.0+)
 
 ### 特别说明
 
@@ -173,7 +172,9 @@ npm run server
 ### 后记
 
 此项目直接由`vue-cli 3.0`生成并改进。使用的是`webpack V4`及`node V10.9.0`。
+
 现存问题：`ES6`不支持`module.exports`，而`node`又不支持`export default`，故`common.js`文件已无法共用。请大神赐招！
+
 时间匆忙难免错漏，肯请指正。并欢迎交流学习，并献上您的宝贵意思。
-QQ群：25702761
-guangda1234@126.com
+
+QQ群：25702761  邮箱：guangda1234@126.com

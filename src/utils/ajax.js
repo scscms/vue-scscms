@@ -9,7 +9,7 @@ axios.defaults.timeout = 3000// 请求超时，适当修改
 axios.defaults.baseURL = '/api'
 // http request 拦截器
 axios.interceptors.request.use(config => {
-  config.headers.authorization = storage.get('userInfo').token + 'abc' || ''
+  config.headers.authorization = storage.get('userInfo').token || ''
   NProgress.start()
   return config
 }, error => {

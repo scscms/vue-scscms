@@ -7,7 +7,7 @@
     "server": "nodemon --delay 2000ms -w app.js -w server server-entry.js",
     "start": "concurrently -k \"npm run server\" \"npm run dev\"",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint --fix"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -54,7 +54,8 @@
       "@vue/standard"
     ],
     "rules": {
-      "no-console": 0
+      "no-console": 0,
+      "space-before-function-paren": 0
     },
     "parserOptions": {
       "parser": "babel-eslint"

@@ -51,7 +51,7 @@ import common from '@/utils/common'
 
 export default {
   name: 'list',
-  data () {
+  data() {
     return {
       userType: 4,
       page_grade: common.page_grade,
@@ -84,7 +84,7 @@ export default {
     }
   },
   methods: {
-    ajaxData () {
+    ajaxData() {
       utils.ajax.call(this, '/listUser', this.search_data, (obj, err) => {
         if (!err) {
           this.table_data.data = obj.data
@@ -93,37 +93,37 @@ export default {
         }
       })
     },
-    onSearch () {
+    onSearch() {
       this.ajaxData()
     },
-    handleCurrentChange (page) {
+    handleCurrentChange(page) {
       if (page !== this.search_data.page) {
         this.search_data.page = page
         this.ajaxData()
       }
     },
-    selectable (row) {
+    selectable(row) {
       return this.grade.deleteUser && (row.user_type === '0' || this.userType < row.user_type)
     },
-    createButton (h, row, code, text) {
+    createButton(h, row, code, text) {
       let self = this
       let dis = false
-      if ((code === 'user_type' && this.grade.passedUser) ||
-        (code === 'edit' && this.grade.updateUser) ||
-        ((code === 'delete' && /^1|2$/.test(row.user_type)) || this.grade.deleteUser)) {
+      if ((code === 'user_type' && this.grade.passedUser) || (code === 'edit' && this.grade.updateUser)) {
         dis = true
       }
-      /* eslint-enable */
+      if (code === 'delete') {
+        dis = !this.selectable(row)
+      }
       return h('el-button', {
         props: { size: 'small', disabled: dis },
         on: {
-          click () {
+          click() {
             self.healColumnClick(code, row)
           }
         }
       }, [text])
     },
-    columnFormatter (row, column) {
+    columnFormatter(row, column) {
       let key = column.property
       let str = row[key] + ''
       let h = this.$createElement
@@ -142,7 +142,7 @@ export default {
       }
       return str
     },
-    deleteUser (arr) {
+    deleteUser(arr) {
       if (!arr) {
         if (this.multipleSelection.length) {
           arr = this.multipleSelection
@@ -161,7 +161,7 @@ export default {
       }).catch(() => {
       })
     },
-    passedUser (arr) {
+    passedUser(arr) {
       utils.ajax.call(this, '/passedUser', { ids: arr.map(o => o.id).join(',') }, (obj, err) => {
         if (!err) {
           arr.forEach(row => {
@@ -170,13 +170,13 @@ export default {
         }
       })
     },
-    add () {
+    add() {
       this.$router.push('/user/add')
     },
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    healColumnClick (code, row) {
+    healColumnClick(code, row) {
       if (code === 'edit') {
         this.$router.push('/user/edit/' + row.id)
       } else if (code === 'passed') {
@@ -186,7 +186,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     utils.storage.get('userInfo', obj => {
       this.userType = obj.userInfo.user_type
     })
