@@ -31,11 +31,12 @@ CREATE TABLE `article` (
   `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
   `title` char(100) NOT NULL DEFAULT '' COMMENT '文章标题',
   `description` char(255) NOT NULL DEFAULT '' COMMENT '文章描述',
+  `thumbnail` char(255) NOT NULL DEFAULT '' COMMENT '缩略图(新增)',
   `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '文章内容',
   `passed` int(1) NOT NULL DEFAULT '0' COMMENT '审核状态',
   `read_type` tinyint NOT NULL DEFAULT '0' COMMENT '阅读权限（参阅用户类型）',
-  `create_time` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '发表时间',
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `create_time` TIMESTAMP(6) not NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '发表时间',
+  `update_time` TIMESTAMP(6) not NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '修改时间',
   `article_extend` text CHARACTER SET utf8 COLLATE utf8_unicode_ci COMMENT '扩展信息',
   PRIMARY KEY (`id`),
   KEY `sort_id` (`sort_id`) USING BTREE,
@@ -55,6 +56,36 @@ CREATE TABLE `upload` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='上传列表';
+
+DROP TABLE IF EXISTS `media`;
+CREATE TABLE `media` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `article_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '文章ID',
+  `media_name` char(100) NOT NULL DEFAULT '' COMMENT '图片名称',
+  `media_src` char(200) NOT NULL DEFAULT '' COMMENT '图片地址',
+  `type` char(10) NOT NULL DEFAULT '' COMMENT '分类类别（picture,video,audio）',
+  `width` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '宽度',
+  `height` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '高度',
+  `size` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '大小MB',
+  `hits` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',
+  `create_time` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '添加时间',
+  PRIMARY KEY (`id`),
+  KEY `article_id` (`article_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='多媒体列表';
+
+DROP TABLE IF EXISTS `comment`;
+CREATE TABLE `comment` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `article_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '文章ID',
+  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '评论内容',
+  `praise` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '赞赏数量',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '评论用户ID',
+  `to_uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '@用户ID',
+  `create_time` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '评论时间',
+  PRIMARY KEY (`id`),
+  KEY `article_id` (`article_id`) USING BTREE,
+  KEY `user_id` (`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论列表';
 
 INSERT INTO user (user_name,pass_word,user_type,user_email) VALUES ('admin','$2a$10$oe/ovruYdv0EmNsKWLJwfu6Na51whOBRJOAJxBO.yt/C6DxQhdDNK',1,'10000@qq.com');
 #可选的操作：插入用户：admin  密码：admin123
