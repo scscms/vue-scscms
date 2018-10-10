@@ -136,7 +136,7 @@ export default {
         ])
       } else if (key === 'user_type') {
         if (str === '0') {
-          return this.createButton(h, row, key, '通过')
+          return this.createButton(h, row, 'passed', '通过')
         }
         str = common.user_type[str] || '未知'
       }
@@ -165,7 +165,7 @@ export default {
       utils.ajax.call(this, '/passedUser', { ids: arr.map(o => o.id).join(',') }, (obj, err) => {
         if (!err) {
           arr.forEach(row => {
-            row.passed = obj.passed
+            row.user_type = obj.passed
           })
         }
       })
