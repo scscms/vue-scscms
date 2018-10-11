@@ -23,8 +23,8 @@
             <dd>角色：{{getUserType}}</dd>
             <dd>邮箱：{{userInfo.user_email}}</dd>
           </dl>
-          <el-button size="small" type="primary" @click="loginOut">退出系统</el-button>
-          <el-button size="small" @click="showChange" :disabled="grade.changePassword">修改密码</el-button>
+          <el-button type="primary" @click="loginOut">退出系统</el-button>
+          <el-button @click="showChange" :disabled="grade.changePassword">修改密码</el-button>
         </div>
       </div>
       <div class="el-col top_left"></div>

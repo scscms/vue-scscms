@@ -34,11 +34,30 @@ function sendEmail (email, title, body) {
   })
 }
 
+// 搜索文件条件
+function getArticleQuery(data, arr) {
+  let querying = ''
+  if (data.title) {
+    querying += ' and title like ?'
+    arr.push('%' + data.title + '%')
+  }
+  if (/^\d+$/.test(data.sort_id)) {
+    querying += ' and sort_id=?'
+    arr.push(data.sort_id >> 0)
+  }
+  if (/^[1-4]$/.test(data.read_type)) {
+    querying += ' and read_type=?'
+    arr.push(data.read_type >> 0)
+  }
+  return querying
+}
+
 module.exports = {
   config,
   mysql,
   bcrypt,
   common,
   getClientIP,
-  sendEmail
+  sendEmail,
+  getArticleQuery
 }

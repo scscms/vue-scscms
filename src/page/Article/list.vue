@@ -3,14 +3,14 @@
     <el-row class="grid-table">
       <el-form :inline="true" :model='search_data'>
         <el-form-item label="标题">
-          <el-input size="small" v-model="search_data.title"></el-input>
+          <el-input v-model="search_data.title"></el-input>
         </el-form-item>
         <el-form-item label="分类">
-          <el-cascader size="small" change-on-select :options="sort_data" :clearable="true" v-model="sort_id"
+          <el-cascader change-on-select :options="sort_data" :clearable="true" v-model="sort_id"
                        :props="defaultProps"></el-cascader>
         </el-form-item>
         <el-form-item label="权限">
-          <el-select size="small" v-model="search_data.read_type">
+          <el-select v-model="search_data.read_type">
             <el-option label="全部" value=""></el-option>
             <el-option v-for="(value,key) in read_type" :key="key"
                        :label="value" :value="key" v-if="key!='0'">
@@ -18,8 +18,8 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button size="small" icon="search" @click='onSearch'>查询</el-button>
-          <el-button size="small" icon="plus" type="primary" @click="add" :disabled="grade.updateArticle">添加文章
+          <el-button icon="search" type="primary" @click='onSearch'>查询</el-button>
+          <el-button icon="plus" @click="add" :disabled="grade.updateArticle">添加文章
           </el-button>
         </el-form-item>
       </el-form>
@@ -245,7 +245,7 @@ export default {
     },
     getActiveContent (id) {
       this.loading = !0
-      utils.ajax.call(this, '/getArticleById', { id }, (obj, err) => {
+      utils.ajax.call(this, '/getArticleById', Object.assign({ id }, this.search_data), (obj, err) => {
         this.loading = !1
         if (err) {
           this.$refs.view.open(!1)
@@ -288,6 +288,7 @@ export default {
     },
     // 点击查询
     onSearch () {
+      this.search_data.page = 1
       this.ajaxData()
     },
     handleCurrentChange (page) {

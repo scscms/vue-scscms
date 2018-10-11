@@ -3,13 +3,13 @@
     <el-row class="grid-table">
       <el-form :inline="true" :model='search_data'>
         <el-form-item label="帐号">
-          <el-input size="small" v-model="search_data.user_name"></el-input>
+          <el-input v-model="search_data.user_name"></el-input>
         </el-form-item>
         <el-form-item label="邮箱">
-          <el-input size="small" v-model="search_data.user_email"></el-input>
+          <el-input v-model="search_data.user_email"></el-input>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select size="small" v-model="search_data.user_type">
+          <el-select v-model="search_data.user_type">
             <el-option label="全部" value=""></el-option>
             <el-option v-for="(value,key) in user_type" :key="key"
                        :label="value" :value="key">
@@ -17,8 +17,8 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button size="small" icon="search" @click='onSearch'>查询</el-button>
-          <el-button size="small" icon="plus" :disabled="grade.updateUser" type="primary" @click='add'>添加用户</el-button>
+          <el-button icon="search" type="primary" @click="onSearch">查询</el-button>
+          <el-button icon="plus" :disabled="grade.updateUser" @click='add'>添加用户</el-button>
         </el-form-item>
       </el-form>
       <el-button type="danger" :disabled="grade.deleteUser" @click='deleteUser()'>批量删除</el-button>
@@ -94,6 +94,7 @@ export default {
       })
     },
     onSearch() {
+      this.search_data.page = 1
       this.ajaxData()
     },
     handleCurrentChange(page) {
@@ -108,7 +109,7 @@ export default {
     createButton(h, row, code, text) {
       let self = this
       let dis = false
-      if ((code === 'user_type' && this.grade.passedUser) || (code === 'edit' && this.grade.updateUser)) {
+      if ((code === 'passed' && this.grade.passedUser) || (code === 'edit' && this.grade.updateUser)) {
         dis = true
       }
       if (code === 'delete') {

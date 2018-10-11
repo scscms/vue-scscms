@@ -32,7 +32,7 @@ module.exports = {
     listUpFile: 4, // 管理上传列表
     listUser: 4, // 用户列表
     updateUser: 2, // 添加、修改用户（超级管理员）
-    passedUser: 4, // 审核用户列表
+    passedUser: 2, // 审核用户列表
     deleteUser: 2, // 删除用户列表
     listArticle: 4, // 文章列表（必须登录）
     updateArticle: 4, // 新添或编辑文章（必须登录）

@@ -23,8 +23,10 @@ async function getArticleById (ctx) {
     msg = '查无此文章'
   }
   // 扩展上一条下一条数据
-  let [prev] = await connection.execute('SELECT `id`,`title` FROM article where id<? order by id desc limit 1', [id])
-  let [next] = await connection.execute('SELECT `id`,`title` FROM article where id>? order by id asc limit 1', [id])
+  const arr = [id]
+  let sql = 'SELECT `id`,`title` FROM article where id<? '+P.getArticleQuery(data,arr)+' order by id'
+  let [prev] = await connection.execute(sql+' desc limit 1', arr)
+  let [next] = await connection.execute(sql.replace('<','>')+' asc limit 1', arr)
   obj.prev = prev.length ? prev[0] : {}
   obj.next = next.length ? next[0] : {}
   await connection.end()

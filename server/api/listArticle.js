@@ -7,25 +7,7 @@ async function listArticle (ctx) {
   let pageSize = Math.abs(data.pageSize >> 0) || 10// 分页率
   let page = Math.abs(data.page >> 0) || 1// 当前页码
   const arr = []
-  let querying = ''
-  if (data.title) {
-    querying += ' and title like ?'
-    arr.push('%' + data.title + '%')
-  }
-  if (/^\d+$/.test(data.sort_id)) {
-    querying += ' and sort_id=?'
-    arr.push(data.sort_id >> 0)
-  }
-  if (/^[1-4]$/.test(data.read_type)) {
-    querying += ' and read_type=?'
-    arr.push(data.read_type >> 0)
-  }
-  // 会员只能查看自己的文章(暂关闭)
-  const user = ctx.state.userInfo
-  if (user.user_type > 2) {
-    // querying += " and user_id=?";
-    // arr.push(user.id >> 0);
-  }
+  let querying = P.getArticleQuery(data,arr)
   const connection = await P.mysql.createConnection(P.config.mysqlDB)
   const [rows] = await connection.execute('SELECT SQL_NO_CACHE COUNT(*) as total FROM `article`' + querying.replace('and', 'where'), arr)
   const total = rows[0].total// 总数量

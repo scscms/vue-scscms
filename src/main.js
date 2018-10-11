@@ -16,7 +16,7 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
 Vue.use(Vuex)
-Vue.use(ElementUI)
+Vue.use(ElementUI, { size: 'small' })
 Vue.use(VueRouter)
 
 const router = new VueRouter(routes)
