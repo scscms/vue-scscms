@@ -1,5 +1,5 @@
-// 后台共用变量
-module.exports = {
+// 前后台共用变量
+export default {
   web_name: '阳光内容管理系统',
   web_domain: 'http://103.27.4.146:3001', // 访问域名
   name_reg: /^[a-z\u4e00-\u9fa5]{3,10}$/i, // 帐号验证
@@ -50,6 +50,29 @@ module.exports = {
     errCode: '#失败：激活码错误！',
     failed: '#失败：更新数据异常！',
     success: '恭喜您#成功！可以登录了。'
+  },
+  mixin: {
+    methods: {
+      dealUserInfo: function (o) {
+        if (this.hasOwnProperty('userInfo')) {
+          this.userInfo = o
+        }
+        const g = this.grade
+        if (g) {
+          const p = this.page_grade
+          for (var k in g) {
+            if (g.hasOwnProperty(k)) {
+              g[k] = o.user_type > p[k]
+            }
+          }
+        }
+      }
+    },
+    created: function () {
+      this.dealUserInfo(this.$store.state.data)
+    },
+    watch: {
+      '$store.state.data': 'dealUserInfo'
+    }
   }
-  // 以上内容修改请同步/utils/common.js
 }

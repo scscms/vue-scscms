@@ -173,8 +173,6 @@ npm run server
 
 此项目直接由`vue-cli 3.0`生成并改进。使用的是`webpack V4`及`node V10.9.0`。
 
-现存问题：`ES6`不支持`module.exports`，而`node`又不支持`export default`，故`common.js`文件已无法共用。请大神赐招！
-
 时间匆忙难免错漏，肯请指正。并欢迎交流学习，并献上您的宝贵意思。
 
 QQ群：25702761  邮箱：guangda1234@126.com

@@ -25,7 +25,7 @@
 </template>
 <script type="text/javascript">
 import utils from '@/utils/index'
-import common from '@/utils/common'
+import common from '@/../server/common'
 
 export default {
   name: 'list',

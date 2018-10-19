@@ -1,4 +1,4 @@
-import common from '@/utils/common'
+import common from '@/../server/common'
 import Login from './page/Login.vue'
 import NoFind from './page/NoFind.vue'
 import Home from './page/Home.vue'

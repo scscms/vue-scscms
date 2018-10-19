@@ -31,7 +31,7 @@
 </template>
 <script type="text/javascript">
 import utils from '@/utils/index'
-import common from '@/utils/common'
+import common from '@/../server/common'
 import components from '@/components/index'
 
 export default {

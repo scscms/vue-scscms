@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import common from '@/utils/common'
+import common from '@/../server/common'
 import utils from '@/utils/index'
 
 export default {

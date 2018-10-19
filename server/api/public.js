@@ -2,7 +2,7 @@
 const config = require('../config')
 const mysql = require('mysql2/promise')
 const bcrypt = require('bcryptjs')
-const common = require('../common')
+const common = require('../common').default
 const nodemailer = require('nodemailer')
 
 // 公用：获取客户端IP

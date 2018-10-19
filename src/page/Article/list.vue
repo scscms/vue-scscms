@@ -13,7 +13,7 @@
           <el-select v-model="search_data.read_type">
             <el-option label="全部" value=""></el-option>
             <el-option v-for="(value,key) in read_type" :key="key"
-                       :label="value" :value="key" v-if="key!='0'">
+                       :label="value" :value="key" v-if="key!=='0'">
             </el-option>
           </el-select>
         </el-form-item>
@@ -74,7 +74,7 @@
 </template>
 <script type="text/javascript">
 import utils from '@/utils/index'
-import common from '@/utils/common'
+import common from '@/../server/common'
 import components from '@/components/index'
 
 export default {
