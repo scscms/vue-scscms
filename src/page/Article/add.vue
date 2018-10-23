@@ -19,8 +19,8 @@
       </el-form-item>
       <el-form-item label="封面图片" prop="pic">
         <el-input v-model="data.pic"></el-input>
-        <up-file ref="upload" :upload="{}" @successUpload="successUpload"></up-file>
-        <el-button @click="upImg" style="margin-left:10px" :disabled="grade.upFile">上传图片</el-button>
+        <up-file ref="upload" :upload="{}" @successUpload="successUpload" @progress="onProgress"></up-file>
+        <el-button @click="upImg" style="margin-left:10px" :disabled="grade.upFile">{{upText}}</el-button>
       </el-form-item>
       <el-form-item label="文章内容" prop="content">
         <quill-editor v-model="data.content" ref="myQuillEditor">
@@ -36,12 +36,17 @@
 <script type="text/javascript">
 import utils from '@/utils/index'
 import common from '@/../server/common'
-import components from '@/components/index'
+import '@/components/index'
+import { quillEditor } from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 export default {
   name: 'list',
   data () {
     return {
+      upProgress: 0,
       editorOption: {
         modules: {
           placeholder: 'xxx',
@@ -109,7 +114,16 @@ export default {
       }
     }
   },
+  computed: {
+    upText() {
+      let p = this.upProgress
+      return p > 0 && p < 100 ? p + '%' : '上传图片'
+    }
+  },
   methods: {
+    onProgress(p) {
+      this.upProgress = p
+    },
     saveArticle () {
       this.$refs.form.validate(v => {
         if (v) {
@@ -205,7 +219,9 @@ export default {
     }
   },
   mixins: [common.mixin],
-  components
+  components: {
+    quillEditor
+  }
 }
 </script>
 <style lang="less">

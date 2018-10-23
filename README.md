@@ -95,7 +95,7 @@ npm run server
 │   └── index.html // 首页模板
 ├── server // Koa后端，用于提供Api
 │   ├── api // api接口文件夹，已经为每个接口独立一个文件
-│   ├── common.js // 后台共用配置参数，包括权限配置
+│   ├── common.js // 前后台共用配置参数，包括权限配置
 │   ├── config.js // 后台配置文件夹，主要是数据库及邮箱服务配置
 │   ├── mysql.sql // 数据库表文档
 │   └── routes.js // 后台route-路由
@@ -123,7 +123,6 @@ npm run server
 │   ├── utils // 插件
 │   │    ├── index.js
 │   │    ├── ajax.js  //axios封装请求
-│   │    ├── common.js // 前台共用配置参数，包括权限配置
 │   │    └── storage.js // localStorage缓存
 │   ├── App.vue // 主文件
 │   ├── main.js // 引入Vue等资源、挂载Vue的入口js
@@ -170,6 +169,8 @@ npm run server
 - 25、upFile: 上传过程（访问权限：自定义，代码在server/routes.js里）
 
 ### 后记
+
+- 2018-10-23 使用`cdn`减少打包文件
 
 此项目直接由`vue-cli 3.0`生成并改进。使用的是`webpack V4`及`node V10.9.0`。
 

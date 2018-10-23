@@ -31,9 +31,10 @@ axios.interceptors.response.use(response => {
  * @param  {string}   url       请求的接口URL
  * @param  {object}   data      传的参数，没有则传空对象
  * @param  {Function} fn        回调函数 fn(返回的数据,错误信息)
+ * @param  {Function} progress  上传进度函数 fn(返回的数据)
  * @return
  */
-function ajax (url, data, fn) {
+function ajax(url, data, fn, progress = function () {}) {
   NProgress.start()
   let head = 'application/x-www-form-urlencoded; charset=UTF-8'
   if (Object.prototype.toString.call(data) === '[object FormData]') {
@@ -48,6 +49,9 @@ function ajax (url, data, fn) {
     method: 'post',
     url,
     data: data,
+    onUploadProgress: event => {
+      progress.call(this, Math.round((event.loaded * 100) / event.total))
+    },
     headers: { 'Content-Type': head }
   }).then(
     (res) => {

@@ -108,7 +108,7 @@
 <script type="text/javascript">
 import utils from '@/utils/index'
 import common from '@/../server/common'
-import components from '@/components/index'
+import '@/components/index'
 // 动画对象
 const act = {
   start: null, // 状态：off,on,null
@@ -378,7 +378,6 @@ export default {
     }
   },
   mixins: [common.mixin],
-  components,
   watch: {
     $route (to) {
       this.updateCurMenu(to)

@@ -11,7 +11,7 @@ export default {
   email_txt: '请输入正确邮箱地址',
   pic_reg: /^(https?:\/\/|\/upFile\/)/i,
   pic_txt: '头像地址不正确！',
-  upFile_maxSize: 1024 * 1024 * 5, // 上传文件大小限制
+  upFile_maxSize: 1024 * 1024 * 50, // 上传文件大小限制
   upFile_accept: /^image\//, // 上传文件格式限制
   user_type: {
     0: '未审核用户',

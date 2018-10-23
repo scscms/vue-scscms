@@ -38,6 +38,8 @@ export default {
           if (!err) {
             this.$emit('successUpload', data)
           }
+        }, progress => {
+          this.$emit('progress', progress)
         })
       }
     },

@@ -32,7 +32,7 @@
 <script type="text/javascript">
 import utils from '@/utils/index'
 import common from '@/../server/common'
-import components from '@/components/index'
+import '@/components/index'
 
 export default {
   name: 'list',
@@ -159,8 +159,7 @@ export default {
       if (this.err.includes('邮箱')) this.err = ''
     }
   },
-  mixins: [common.mixin],
-  components
+  mixins: [common.mixin]
 }
 </script>
 <style lang="less">
