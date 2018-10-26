@@ -109,11 +109,12 @@ export default {
     createButton(h, row, code, text) {
       let self = this
       let dis = false
-      if ((code === 'passed' && this.grade.passedUser) || (code === 'edit' && this.grade.updateUser)) {
-        dis = true
-      }
       if (code === 'delete') {
         dis = !this.selectable(row)
+      } else if (code === 'edit') {
+        dis = this.userType >= row.user_type ? true : this.grade.updateUser
+      } else if (code === 'passed') {
+        dis = this.grade.passedUser
       }
       return h('el-button', {
         props: { size: 'small', disabled: dis },

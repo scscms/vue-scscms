@@ -1,26 +1,10 @@
-module.exports = {
-  login: require('./login'),
-  register: require('./register'),
-  listArticle: require('./listArticle'),
-  listSort: require('./listSort'),
-  saveUpFile: require('./saveUpFile'),
-  listUpFile: require('./listUpFile'),
-  delFile: require('./delFile'),
-  retrieve: require('./retrieve'),
-  findPassword: require('./findPassword'),
-  active: require('./active'),
-  changePassword: require('./changePassword'),
-  updateArticle: require('./updateArticle'),
-  passedArticle: require('./passedArticle'),
-  deleteArticle: require('./deleteArticle'),
-  getArticleById: require('./getArticleById'),
-  updateSort: require('./updateSort'),
-  deleteSort: require('./deleteSort'),
-  batchDelSort: require('./batchDelSort'),
-  listUser: require('./listUser'),
-  passedUser: require('./passedUser'),
-  deleteUser: require('./deleteUser'),
-  getUserById: require('./getUserById'),
-  upUserPic: require('./upUserPic'),
-  updateUser: require('./updateUser')
-}
+let fs = require('fs')
+let readDir = fs.readdirSync('./server/api/')
+let obj = {}
+let exclude = ['index.js', 'public.js'] // 排除文件
+readDir.forEach(function (file) {
+  if (file.endsWith('.js') && !exclude.includes(file)) {
+    obj[file.replace('.js', '')] = require('./' + file)
+  }
+})
+module.exports = obj

@@ -13,7 +13,7 @@
       <el-form-item label="用户类型" prop="user_type">
         <el-select v-model="data.user_type" placeholder="请选择">
           <el-option v-for="(item,key) in user_type"
-                     :key="key" :label="item" :value="key" v-if="key != 1">
+                     :key="key" :label="item" :value="key" v-if="key === '0' || key > userInfo.user_type">
           </el-option>
         </el-select>
       </el-form-item>
@@ -44,6 +44,7 @@ export default {
         updateUser: !0,
         upFile: !0
       },
+      userInfo: { user_type: '4' },
       user_type: common.user_type,
       loading: false,
       err: '',
@@ -147,7 +148,15 @@ export default {
             }
           })
           this.data.pass_word = common.defaultPassword
+          if (this.userInfo.user_type >= this.data.user_type) {
+            err = '超越权限！'
+            this.$message({
+              'message': err,
+              'type': 'error'
+            })
+          }
         }
+        err && this.$router.go(-1)
       })
     }
   },

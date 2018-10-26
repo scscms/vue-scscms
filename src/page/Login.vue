@@ -221,7 +221,9 @@ export default {
             this.loading = false
             if (!err) {
               utils.storage.set('userInfo', data, () => {
-                this.$router.replace(this.$route.query.url || '/article/list')
+                let url = this.$route.query.url
+                url = url && !url.includes('login') ? url : '/article/list'
+                this.$router.replace(url)
               })
             }
           })
