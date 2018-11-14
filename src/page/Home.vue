@@ -80,7 +80,7 @@
           <el-breadcrumb-item v-for="item in routes" :to="{ path: item.path }" :key="item.path">{{item.meta.title}}
           </el-breadcrumb-item>
         </el-breadcrumb>
-        <transition name="fade">
+        <transition name="fade" mode="out-in">
           <router-view></router-view>
         </transition>
       </div>

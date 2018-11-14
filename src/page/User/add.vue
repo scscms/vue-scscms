@@ -171,6 +171,3 @@ export default {
   mixins: [common.mixin]
 }
 </script>
-<style lang="less">
-
-</style>

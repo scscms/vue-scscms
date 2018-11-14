@@ -13,7 +13,6 @@ async function listUpFile (ctx) {
   if (page > pages) {
     page = Math.max(1, pages)// 以防没数据
   }
-  console.log((page - 1) * pageSize, page * pageSize)
   const [list] = await connection.execute('SELECT a.*,u.`user_name` FROM upload as a LEFT JOIN user as u on a.user_id = u.id LIMIT ?, ?', [(page - 1) * pageSize, pageSize])
   await connection.end()
   list.forEach(obj => {

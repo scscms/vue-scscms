@@ -1,4 +1,12 @@
-# vue-scscmsV2.0 <sup>webpack V4版</sup>
+# [vue-scscmsV2.0 <sup>webpack V4版</sup>](https://github.com/scscms/vue-scscms)
+
+[![](https://img.shields.io/badge/Powered%20by-vue--scscms-brightgreen.svg)](https://github.com/scscms/vue-scscms)
+[![license](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/scscms/vue-scscms/blob/master/LICENSE)
+[![npm](https://img.shields.io/badge/npm-6.4.1-yellowgreen.svg)](https://github.com/scscms/vue-scscms)
+[![node](https://img.shields.io/badge/node-8.11.0-yellow.svg)](https://github.com/scscms/vue-scscms)
+[![koa](https://img.shields.io/badge/koa-2.5.0-orange.svg)](https://github.com/scscms/vue-scscms)
+[![vue](https://img.shields.io/badge/vue-2.5.17-red.svg)](https://github.com/scscms/vue-scscms)
+[![Element](https://img.shields.io/badge/Element-3.0.1-blue.svg)](https://github.com/scscms/vue-scscms)
 
 基于koa2+mysql+vue2.0+Element+ESlint阳光内容管理系统
 
