@@ -1,6 +1,12 @@
 module.exports = {
   baseUrl: '/',
   outputDir: 'dist',
+  filenameHashing: false,
+  chainWebpack: config => {
+    //config.plugins.delete('html')
+    config.plugins.delete('preload')
+    config.plugins.delete('prefetch')
+  },
   configureWebpack: {
     externals: {
       vue: "Vue",
