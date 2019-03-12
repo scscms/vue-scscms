@@ -22,6 +22,10 @@
 export default {
   name: 'Sidebar',
   props: {
+    str: {
+      type: String,
+      default: ''
+    },
     beforeClose: {
       default: null
     }

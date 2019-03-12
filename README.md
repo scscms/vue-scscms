@@ -57,7 +57,7 @@ npm run dev
 
 默认情况下使用的是公用数据库。为了达到更好的用户体验和数据安全推荐您自己安装mysql来测试。
 首先安装mysql和新建用户等，教程自行解决。
-接着在mysql新建数据库和建表，为了方便操作在此已经提供sql文档：参见`server/mysql.sql`
+接着在mysql新建数据库和建表，为了方便操作在此已经提供sql文档：参见`server/mysql.sql` 或 `server/mysql8.sql`
 
 - 然后打开文件`server/config.js`修改数据库和邮箱配置。
 
