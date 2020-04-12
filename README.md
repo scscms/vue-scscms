@@ -179,6 +179,7 @@ npm run server
 ### 后记
 
 - 2018-10-23 使用`cdn`减少打包文件
+- 2020-04-12 使用node-windows实现服务器发布
 
 此项目直接由`vue-cli 3.0`生成并改进。使用的是`webpack V4`及`node V10.9.0`。
 

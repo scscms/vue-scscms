@@ -4,7 +4,7 @@ dist/
 npm-debug.log
 log.txt
 package-lock.json
-npm-debug.log
+daemon/
 
 # Editor directories and files
 .idea
