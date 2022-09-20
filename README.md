@@ -21,7 +21,7 @@
 
 ### 在线预览
 ![image](static/readme.png)
-<a href="http://103.27.4.146:3001/login" target="_blank">点击查看在线DEMO</a>
+<a href="http://103.236.255.179:3001/login" target="_blank">点击查看在线DEMO</a>
 
 **测试帐号**
 
